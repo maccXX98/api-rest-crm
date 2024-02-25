@@ -1,5 +1,6 @@
-import { IsNotEmpty } from 'class-validator';
 import { Distributor } from '../../distributors/entities/distributor.entity';
+import { ProductOrderDetail } from '../../product-order-details/entities/product-order-detail.entity';
+import { IsNotEmpty } from 'class-validator';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -7,6 +8,8 @@ import {
   DeleteDateColumn,
   ManyToOne,
   JoinColumn,
+  OneToMany,
+  Relation,
 } from 'typeorm';
 
 @Entity()
@@ -44,4 +47,14 @@ export class Product {
   })
   @JoinColumn({ name: 'DistributorID' })
   distributor: Promise<Distributor>;
+
+  @OneToMany(
+    () => ProductOrderDetail,
+    (productOrderDetail) => productOrderDetail.product,
+    {
+      lazy: true,
+    },
+  )
+  @JoinColumn()
+  productOrderDetail: Relation<ProductOrderDetail>[];
 }

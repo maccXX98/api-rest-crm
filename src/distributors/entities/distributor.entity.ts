@@ -1,3 +1,5 @@
+import { DistributorRelation } from '../../distributor-relations/entities/distributor-relation.entity';
+import { ProductOrder } from '../../product-orders/entities/product-order.entity';
 import { Product } from '../../products/entities/product.entity';
 import {
   Entity,
@@ -5,6 +7,8 @@ import {
   Column,
   DeleteDateColumn,
   OneToMany,
+  Relation,
+  JoinColumn,
 } from 'typeorm';
 
 @Entity()
@@ -28,5 +32,22 @@ export class Distributor {
   deletedAt?: Date;
 
   @OneToMany(() => Product, (product) => product.distributor, { lazy: true })
-  products: Promise<Product[]>;
+  @JoinColumn()
+  products: Relation<Product>[];
+
+  @OneToMany(() => ProductOrder, (productOrder) => productOrder.distributor, {
+    lazy: true,
+  })
+  @JoinColumn()
+  productOrders: Relation<ProductOrder>[];
+
+  @OneToMany(
+    () => DistributorRelation,
+    (distributorRelation) => distributorRelation.DistributorID,
+    {
+      lazy: true,
+    },
+  )
+  @JoinColumn()
+  distributorRelation: Relation<DistributorRelation>[];
 }

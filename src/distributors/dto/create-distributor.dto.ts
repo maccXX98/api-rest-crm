@@ -9,8 +9,8 @@ export class CreateDistributorDto {
   @IsNotEmpty()
   @IsString()
   @Length(3, 150)
-  @Matches(/^[a-zA-Z\s]*$/, {
-    message: 'Country must contain only letters and spaces',
+  @Matches(/^[a-zA-Z\u00C0-\u017F\s]*$/, {
+    message: 'Country must contain only letters, accents, and spaces',
   })
   Country: string;
 

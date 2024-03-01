@@ -1,10 +1,15 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { PRODUCT_REPOSITORY, DISTRIBUTOR_REPOSITORY } from '../constants';
+import {
+  PRODUCT_REPOSITORY,
+  DISTRIBUTOR_REPOSITORY,
+  CATEGORY_REPOSITORY,
+} from '../constants';
 import { Repository } from 'typeorm';
 import { Product } from './entities/product.entity';
 import { Distributor } from '../distributors/entities/distributor.entity';
+import { Category } from '../categories/entities/category.entity';
 
 @Injectable()
 export class ProductsService {
@@ -13,6 +18,8 @@ export class ProductsService {
     private productRepository: Repository<Product>,
     @Inject(DISTRIBUTOR_REPOSITORY)
     private distributorRepository: Repository<Distributor>,
+    @Inject(CATEGORY_REPOSITORY)
+    private categoryRepository: Repository<Category>,
   ) {}
 
   async create(createProductDto: CreateProductDto): Promise<Product> {
@@ -50,6 +57,7 @@ export class ProductsService {
   ): Promise<Product> {
     const product = await this.productRepository.findOne({
       where: { ProductID: id },
+      relations: ['categories'],
     });
     if (!product) {
       throw new Error(`Product with ID ${id} not found`);
@@ -68,10 +76,25 @@ export class ProductsService {
       delete updateProductDto.DistributorID;
     }
 
-    await this.productRepository.update({ ProductID: id }, updateProductDto);
+    if (updateProductDto.categories) {
+      product.categories = await Promise.all(
+        updateProductDto.categories.map(async (id) => {
+          const category = await this.categoryRepository.findOne({
+            where: { CategoryID: id },
+          });
+          if (!category) {
+            throw new Error(`Category with ID ${id} not found`);
+          }
+          return category;
+        }),
+      );
+      delete updateProductDto.categories;
+    }
+
+    await this.productRepository.save(product);
     return this.productRepository.findOne({
       where: { ProductID: id },
-      relations: ['distributor'],
+      relations: ['distributor', 'categories'],
     });
   }
 

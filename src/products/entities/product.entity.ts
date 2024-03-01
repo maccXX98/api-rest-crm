@@ -1,5 +1,7 @@
+import { Price } from '../../prices/entities/price.entity';
 import { Distributor } from '../../distributors/entities/distributor.entity';
 import { ProductOrderDetail } from '../../product-order-details/entities/product-order-detail.entity';
+import { Category } from '../../categories/entities/category.entity';
 import { IsNotEmpty } from 'class-validator';
 import {
   Entity,
@@ -10,6 +12,8 @@ import {
   JoinColumn,
   OneToMany,
   Relation,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
 
 @Entity()
@@ -26,12 +30,6 @@ export class Product {
 
   @Column('text')
   Description: string;
-
-  @Column('decimal', { precision: 10, scale: 2 })
-  Cost: number;
-
-  @Column('decimal', { precision: 10, scale: 2 })
-  SellingPrice: number;
 
   @Column('text')
   Template: string;
@@ -57,4 +55,17 @@ export class Product {
   )
   @JoinColumn()
   productOrderDetail: Relation<ProductOrderDetail>[];
+
+  @OneToMany(() => Price, (prices) => prices.product, {
+    lazy: true,
+  })
+  @JoinColumn()
+  productPrices: Relation<Price>[];
+
+  @ManyToMany(() => Category, (category) => category.products, {
+    lazy: true,
+    cascade: true,
+  })
+  @JoinTable()
+  categories: Relation<Category>[];
 }

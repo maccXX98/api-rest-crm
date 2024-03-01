@@ -8,6 +8,8 @@ import { ProductOrdersModule } from './product-orders/product-orders.module';
 import { UsersModule } from './users/users.module';
 import { ProductOrderDetailsModule } from './product-order-details/product-order-details.module';
 import { DistributorRelationsModule } from './distributor-relations/distributor-relations.module';
+import { PricesModule } from './prices/prices.module';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
@@ -18,6 +20,8 @@ import { DistributorRelationsModule } from './distributor-relations/distributor-
     ProductOrderDetailsModule,
     UsersModule,
     DistributorRelationsModule,
+    PricesModule,
+    CategoriesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

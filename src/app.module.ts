@@ -11,6 +11,7 @@ import { DistributorRelationsModule } from './distributor-relations/distributor-
 import { PricesModule } from './prices/prices.module';
 import { CategoriesModule } from './categories/categories.module';
 import { InventoriesModule } from './inventories/inventories.module';
+import { ProductLinksModule } from './product-links/product-links.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { InventoriesModule } from './inventories/inventories.module';
     PricesModule,
     CategoriesModule,
     InventoriesModule,
+    ProductLinksModule,
   ],
   controllers: [AppController],
   providers: [AppService],

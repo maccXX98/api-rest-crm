@@ -3,6 +3,7 @@ import { Distributor } from '../../distributors/entities/distributor.entity';
 import { ProductOrderDetail } from '../../product-order-details/entities/product-order-detail.entity';
 import { Category } from '../../categories/entities/category.entity';
 import { Inventory } from '../../inventories/entities/inventory.entity';
+import { ProductLink } from '../../product-links/entities/product-link.entity';
 import { IsNotEmpty } from 'class-validator';
 import {
   Entity,
@@ -72,4 +73,10 @@ export class Product {
   })
   @JoinColumn()
   inventories: Relation<Inventory>[];
+
+  @OneToMany(() => ProductLink, (productLink) => productLink.product, {
+    lazy: true,
+  })
+  @JoinColumn()
+  productLinks: Relation<ProductLink>[];
 }

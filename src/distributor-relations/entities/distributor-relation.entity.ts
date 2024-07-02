@@ -5,6 +5,8 @@ import {
   ManyToOne,
   JoinColumn,
   Relation,
+  CreateDateColumn,
+  DeleteDateColumn,
 } from 'typeorm';
 import { Distributor } from '../../distributors/entities/distributor.entity';
 
@@ -21,6 +23,12 @@ export class DistributorRelation {
 
   @Column()
   DistributorID: number;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @DeleteDateColumn()
+  deletedAt?: Date;
 
   @ManyToOne(
     () => Distributor,

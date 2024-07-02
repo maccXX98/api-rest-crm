@@ -9,6 +9,7 @@ import {
   OneToMany,
   Relation,
   JoinColumn,
+  CreateDateColumn,
 } from 'typeorm';
 
 @Entity()
@@ -27,6 +28,9 @@ export class Distributor {
 
   @Column({ length: 25 })
   ContactPhone: string;
+
+  @CreateDateColumn()
+  createdAt: Date;
 
   @DeleteDateColumn()
   deletedAt?: Date;

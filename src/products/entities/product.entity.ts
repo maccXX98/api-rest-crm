@@ -16,6 +16,7 @@ import {
   OneToMany,
   Relation,
   ManyToMany,
+  CreateDateColumn,
 } from 'typeorm';
 
 @Entity()
@@ -38,6 +39,9 @@ export class Product {
 
   @Column({ length: 150 })
   Image: string;
+
+  @CreateDateColumn()
+  createdAt: Date;
 
   @DeleteDateColumn()
   deletedAt?: Date;

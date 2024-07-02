@@ -6,6 +6,7 @@ import {
   DeleteDateColumn,
   ManyToOne,
   JoinColumn,
+  CreateDateColumn,
 } from 'typeorm';
 
 @Entity()
@@ -21,6 +22,9 @@ export class Price {
 
   @Column()
   Currency: string;
+
+  @CreateDateColumn()
+  createdAt: Date;
 
   @DeleteDateColumn()
   deletedAt?: Date;

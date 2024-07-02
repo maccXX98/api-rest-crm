@@ -8,6 +8,7 @@ import {
   ManyToOne,
   JoinColumn,
   Relation,
+  CreateDateColumn,
 } from 'typeorm';
 
 @Entity()
@@ -18,6 +19,9 @@ export class ProductLink {
   @IsNotEmpty()
   @Column({ type: 'varchar', length: 250 })
   link: string;
+
+  @CreateDateColumn()
+  createdAt: Date;
 
   @DeleteDateColumn()
   deletedAt?: Date;

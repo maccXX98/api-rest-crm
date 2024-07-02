@@ -10,6 +10,7 @@ import {
   OneToMany,
   JoinColumn,
   Relation,
+  CreateDateColumn,
 } from 'typeorm';
 
 @Entity()
@@ -25,6 +26,9 @@ export class ProductOrder {
 
   @Column({ type: 'date' })
   OrderDate: Date;
+
+  @CreateDateColumn()
+  createdAt: Date;
 
   @DeleteDateColumn()
   deletedAt?: Date;

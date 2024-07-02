@@ -5,6 +5,7 @@ import {
   PrimaryGeneratedColumn,
   DeleteDateColumn,
   OneToMany,
+  CreateDateColumn,
 } from 'typeorm';
 
 @Entity()
@@ -23,6 +24,9 @@ export class User {
 
   @Column({ type: 'binary', nullable: true })
   Photo: Buffer;
+
+  @CreateDateColumn()
+  createdAt: Date;
 
   @DeleteDateColumn()
   deletedAt?: Date;

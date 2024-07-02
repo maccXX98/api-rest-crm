@@ -8,6 +8,7 @@ import {
   DeleteDateColumn,
   Relation,
   JoinColumn,
+  CreateDateColumn,
 } from 'typeorm';
 
 @Entity()
@@ -26,6 +27,9 @@ export class ProductOrderDetail {
 
   @Column('decimal', { precision: 10, scale: 2 })
   TotalAmount: number;
+
+  @CreateDateColumn()
+  createdAt: Date;
 
   @DeleteDateColumn()
   deletedAt?: Date;

@@ -8,6 +8,7 @@ import {
   ManyToOne,
   JoinColumn,
   Relation,
+  CreateDateColumn,
 } from 'typeorm';
 
 @Entity()
@@ -18,6 +19,9 @@ export class Inventory {
   @IsNotEmpty()
   @Column({ type: 'int' })
   quantity: number;
+
+  @CreateDateColumn()
+  createdAt: Date;
 
   @DeleteDateColumn()
   deletedAt?: Date;

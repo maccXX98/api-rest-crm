@@ -10,6 +10,7 @@ import { ProductOrderDetailsModule } from './product-order-details/product-order
 import { DistributorRelationsModule } from './distributor-relations/distributor-relations.module';
 import { PricesModule } from './prices/prices.module';
 import { CategoriesModule } from './categories/categories.module';
+import { InventoriesModule } from './inventories/inventories.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { CategoriesModule } from './categories/categories.module';
     DistributorRelationsModule,
     PricesModule,
     CategoriesModule,
+    InventoriesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

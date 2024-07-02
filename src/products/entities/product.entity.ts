@@ -2,6 +2,7 @@ import { Price } from '../../prices/entities/price.entity';
 import { Distributor } from '../../distributors/entities/distributor.entity';
 import { ProductOrderDetail } from '../../product-order-details/entities/product-order-detail.entity';
 import { Category } from '../../categories/entities/category.entity';
+import { Inventory } from '../../inventories/entities/inventory.entity';
 import { IsNotEmpty } from 'class-validator';
 import {
   Entity,
@@ -65,4 +66,10 @@ export class Product {
     lazy: true,
   })
   categories: Relation<Category>[];
+
+  @OneToMany(() => Inventory, (inventory) => inventory.product, {
+    lazy: true,
+  })
+  @JoinColumn()
+  inventories: Relation<Inventory>[];
 }

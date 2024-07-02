@@ -12,6 +12,7 @@ import { PricesModule } from './prices/prices.module';
 import { CategoriesModule } from './categories/categories.module';
 import { InventoriesModule } from './inventories/inventories.module';
 import { ProductLinksModule } from './product-links/product-links.module';
+import { ProductVariantsModule } from './product-variants/product-variants.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { ProductLinksModule } from './product-links/product-links.module';
     CategoriesModule,
     InventoriesModule,
     ProductLinksModule,
+    ProductVariantsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

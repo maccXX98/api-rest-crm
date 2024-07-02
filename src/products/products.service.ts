@@ -6,7 +6,7 @@ import {
   DISTRIBUTOR_REPOSITORY,
   CATEGORY_REPOSITORY,
 } from '../constants';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Product } from './entities/product.entity';
 import { Distributor } from '../distributors/entities/distributor.entity';
 import { Category } from '../categories/entities/category.entity';
@@ -24,6 +24,7 @@ export class ProductsService {
 
   async create(createProductDto: CreateProductDto): Promise<Product> {
     const newProduct = this.productRepository.create(createProductDto);
+
     const distributor = await this.distributorRepository.findOne({
       where: { DistributorID: createProductDto.DistributorID },
     });
@@ -32,14 +33,23 @@ export class ProductsService {
         `Distributor with ID ${createProductDto.DistributorID} not found`,
       );
     }
-    newProduct.distributor = Promise.resolve(distributor);
+
+    const categories = await this.categoryRepository.findBy({
+      CategoryID: In(createProductDto.CategoryID),
+    });
+    if (categories.length !== createProductDto.CategoryID.length) {
+      throw new Error('One or more categories not found');
+    }
+
+    newProduct.distributor = distributor;
+    newProduct.categories = categories;
 
     return this.productRepository.save(newProduct);
   }
 
   async findAll(): Promise<Product[]> {
     return this.productRepository.find({
-      relations: ['distributor'],
+      relations: ['distributor', 'categories'],
       withDeleted: false,
     });
   }
@@ -47,7 +57,7 @@ export class ProductsService {
   async findOne(id: number): Promise<Product> {
     return this.productRepository.findOne({
       where: { ProductID: id },
-      relations: ['distributor'],
+      relations: ['distributor', 'categories'],
     });
   }
 
@@ -72,13 +82,13 @@ export class ProductsService {
           `Distributor with ID ${updateProductDto.DistributorID} not found`,
         );
       }
-      product.distributor = Promise.resolve(distributor);
+      product.distributor = distributor;
       delete updateProductDto.DistributorID;
     }
 
-    if (updateProductDto.categories) {
-      product.categories = await Promise.all(
-        updateProductDto.categories.map(async (id) => {
+    if (updateProductDto.CategoryID) {
+      const resolvedCategories = await Promise.all(
+        updateProductDto.CategoryID.map(async (id) => {
           const category = await this.categoryRepository.findOne({
             where: { CategoryID: id },
           });
@@ -88,10 +98,14 @@ export class ProductsService {
           return category;
         }),
       );
-      delete updateProductDto.categories;
+      product.categories = resolvedCategories;
+      delete updateProductDto.CategoryID;
     }
 
+    Object.assign(product, updateProductDto);
+
     await this.productRepository.save(product);
+
     return this.productRepository.findOne({
       where: { ProductID: id },
       relations: ['distributor', 'categories'],

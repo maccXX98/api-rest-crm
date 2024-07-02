@@ -13,7 +13,6 @@ import {
   OneToMany,
   Relation,
   ManyToMany,
-  JoinTable,
 } from 'typeorm';
 
 @Entity()
@@ -44,7 +43,7 @@ export class Product {
     lazy: true,
   })
   @JoinColumn({ name: 'DistributorID' })
-  distributor: Promise<Distributor>;
+  distributor: Relation<Distributor>;
 
   @OneToMany(
     () => ProductOrderDetail,
@@ -64,8 +63,6 @@ export class Product {
 
   @ManyToMany(() => Category, (category) => category.products, {
     lazy: true,
-    cascade: true,
   })
-  @JoinTable()
   categories: Relation<Category>[];
 }

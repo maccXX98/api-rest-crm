@@ -22,17 +22,14 @@ export class Category {
 
   @ManyToMany(() => Product, (product) => product.categories, {
     lazy: true,
-    cascade: true,
   })
   @JoinTable({
-    name: 'product_categories',
+    name: 'products_categories',
     joinColumn: {
       name: 'CategoryID',
-      referencedColumnName: 'CategoryID',
     },
     inverseJoinColumn: {
       name: 'ProductID',
-      referencedColumnName: 'ProductID',
     },
   })
   products: Relation<Product>[];

@@ -3,10 +3,9 @@ import { CategoriesService } from './categories.service';
 import { CategoriesController } from './categories.controller';
 import { DatabaseModule } from '../database/database.module';
 import { categoryProviders } from './category.providers';
-import { ProductsModule } from '../products/products.module';
 
 @Module({
-  imports: [DatabaseModule, ProductsModule],
+  imports: [DatabaseModule],
   controllers: [CategoriesController],
   providers: [...categoryProviders, CategoriesService],
   exports: [...categoryProviders],

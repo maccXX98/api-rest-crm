@@ -1,4 +1,12 @@
-import { IsNotEmpty, IsString, Length, IsNumber, Min } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsString,
+  Length,
+  IsNumber,
+  Min,
+  IsOptional,
+  IsArray,
+} from 'class-validator';
 
 export class CreateProductDto {
   @IsNotEmpty()
@@ -24,4 +32,8 @@ export class CreateProductDto {
   @IsNumber()
   @Min(1)
   DistributorID: number;
+
+  @IsOptional()
+  @IsArray()
+  CategoryID: number[];
 }

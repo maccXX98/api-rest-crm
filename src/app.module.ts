@@ -15,6 +15,7 @@ import { ProductLinksModule } from './product-links/product-links.module';
 import { ProductVariantsModule } from './product-variants/product-variants.module';
 import { CustomersModule } from './customers/customers.module';
 import { PaymentMetodsModule } from './payment-metods/payment-metods.module';
+import { CitiesModule } from './cities/cities.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { PaymentMetodsModule } from './payment-metods/payment-metods.module';
     ProductVariantsModule,
     CustomersModule,
     PaymentMetodsModule,
+    CitiesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

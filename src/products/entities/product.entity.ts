@@ -5,6 +5,7 @@ import { Category } from '../../categories/entities/category.entity';
 import { Inventory } from '../../inventories/entities/inventory.entity';
 import { ProductLink } from '../../product-links/entities/product-link.entity';
 import { ProductVariant } from '../../product-variants/entities/product-variant.entity';
+import { CustomerOrderDetail } from '../../customer-order-details/entities/customer-order-detail.entity';
 import { IsNotEmpty } from 'class-validator';
 import {
   Entity,
@@ -90,4 +91,14 @@ export class Product {
   })
   @JoinColumn()
   productVariants: Relation<ProductVariant>[];
+
+  @OneToMany(
+    () => CustomerOrderDetail,
+    (customerOrderDetail) => customerOrderDetail.product,
+    {
+      lazy: true,
+    },
+  )
+  @JoinColumn({ name: 'ProductID' })
+  customerOrderDetails: Relation<CustomerOrderDetail>[];
 }

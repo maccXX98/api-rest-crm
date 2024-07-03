@@ -17,6 +17,8 @@ import { CustomersModule } from './customers/customers.module';
 import { PaymentMetodsModule } from './payment-metods/payment-metods.module';
 import { CitiesModule } from './cities/cities.module';
 import { CustomerOrdersModule } from './customer-orders/customer-orders.module';
+import { AuthModule } from './auth/auth.module';
+import { CustomerOrderDetailsModule } from './customer-order-details/customer-order-details.module';
 
 @Module({
   imports: [
@@ -36,6 +38,8 @@ import { CustomerOrdersModule } from './customer-orders/customer-orders.module';
     PaymentMetodsModule,
     CitiesModule,
     CustomerOrdersModule,
+    AuthModule,
+    CustomerOrderDetailsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

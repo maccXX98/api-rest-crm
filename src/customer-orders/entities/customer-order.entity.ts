@@ -1,3 +1,4 @@
+import { CustomerOrderDetail } from '../../customer-order-details/entities/customer-order-detail.entity';
 import { City } from '../../cities/entities/city.entity';
 import { Customer } from '../../customers/entities/customer.entity';
 import { PaymentMethod } from '../../payment-metods/entities/payment-metod.entity';
@@ -8,6 +9,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   Relation,
 } from 'typeorm';
@@ -49,4 +51,12 @@ export class CustomerOrder {
   })
   @JoinColumn({ name: 'CustomerID' })
   customer: Relation<Customer>;
+
+  @OneToMany(
+    () => CustomerOrderDetail,
+    (customerOrderDetail) => customerOrderDetail.customerOrder,
+    { lazy: true },
+  )
+  @JoinColumn({ name: 'CustomerOrderID' })
+  customerOrderDetails: Relation<CustomerOrderDetail>[];
 }

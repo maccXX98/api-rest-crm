@@ -14,6 +14,7 @@ import { InventoriesModule } from './inventories/inventories.module';
 import { ProductLinksModule } from './product-links/product-links.module';
 import { ProductVariantsModule } from './product-variants/product-variants.module';
 import { CustomersModule } from './customers/customers.module';
+import { PaymentMetodsModule } from './payment-metods/payment-metods.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { CustomersModule } from './customers/customers.module';
     ProductLinksModule,
     ProductVariantsModule,
     CustomersModule,
+    PaymentMetodsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

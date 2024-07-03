@@ -13,6 +13,7 @@ import { CategoriesModule } from './categories/categories.module';
 import { InventoriesModule } from './inventories/inventories.module';
 import { ProductLinksModule } from './product-links/product-links.module';
 import { ProductVariantsModule } from './product-variants/product-variants.module';
+import { CustomersModule } from './customers/customers.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { ProductVariantsModule } from './product-variants/product-variants.modul
     InventoriesModule,
     ProductLinksModule,
     ProductVariantsModule,
+    CustomersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

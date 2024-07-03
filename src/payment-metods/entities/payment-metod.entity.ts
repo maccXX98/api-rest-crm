@@ -1,18 +1,20 @@
+import { CustomerOrder } from '../../customer-orders/entities/customer-order.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
 @Entity()
-export class PaymentMetod {
+export class PaymentMethod {
   @PrimaryGeneratedColumn()
-  PaymentMetodID: number;
+  PaymentMethodID: number;
 
   @Column({ length: 150 })
-  metod: string;
+  method: string;
 
   @Column()
   template: string;
@@ -25,4 +27,10 @@ export class PaymentMetod {
 
   @CreateDateColumn()
   createdAt: Date;
+
+  @OneToMany(
+    () => CustomerOrder,
+    (customerOrder) => customerOrder.paymentMethod,
+  )
+  customerOrders: CustomerOrder[];
 }

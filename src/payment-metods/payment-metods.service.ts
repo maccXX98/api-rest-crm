@@ -1,42 +1,42 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { CreatePaymentMetodDto } from './dto/create-payment-metod.dto';
 import { UpdatePaymentMetodDto } from './dto/update-payment-metod.dto';
-import { PAYMENT_METOD_REPOSITORY } from '../constants';
+import { PAYMENT_METHOD_REPOSITORY } from '../constants';
 import { Repository } from 'typeorm';
-import { PaymentMetod } from './entities/payment-metod.entity';
+import { PaymentMethod } from './entities/payment-metod.entity';
 
 @Injectable()
 export class PaymentMetodsService {
   constructor(
-    @Inject(PAYMENT_METOD_REPOSITORY)
-    private paymentMetodsRepository: Repository<PaymentMetod>,
+    @Inject(PAYMENT_METHOD_REPOSITORY)
+    private paymentMetodsRepository: Repository<PaymentMethod>,
   ) {}
 
   async create(
     createPaymentMetodDto: CreatePaymentMetodDto,
-  ): Promise<PaymentMetod> {
+  ): Promise<PaymentMethod> {
     const newPaymentMetod = this.paymentMetodsRepository.create(
       createPaymentMetodDto,
     );
     return this.paymentMetodsRepository.save(newPaymentMetod);
   }
 
-  async findAll(): Promise<PaymentMetod[]> {
+  async findAll(): Promise<PaymentMethod[]> {
     return this.paymentMetodsRepository.find();
   }
 
-  async findOne(id: number): Promise<PaymentMetod> {
+  async findOne(id: number): Promise<PaymentMethod> {
     return this.paymentMetodsRepository.findOne({
-      where: { PaymentMetodID: id },
+      where: { PaymentMethodID: id },
     });
   }
 
   async update(
     id: number,
     updatePaymentMetodDto: UpdatePaymentMetodDto,
-  ): Promise<PaymentMetod> {
+  ): Promise<PaymentMethod> {
     const paymentMetod = await this.paymentMetodsRepository.findOne({
-      where: { PaymentMetodID: id },
+      where: { PaymentMethodID: id },
     });
     if (!paymentMetod) {
       throw new Error(`PaymentMetod with ID ${id} not found`);
@@ -44,7 +44,7 @@ export class PaymentMetodsService {
 
     await this.paymentMetodsRepository.update(id, updatePaymentMetodDto);
     return this.paymentMetodsRepository.findOne({
-      where: { PaymentMetodID: id },
+      where: { PaymentMethodID: id },
     });
   }
 

@@ -1,12 +1,12 @@
 import { DataSource } from 'typeorm';
-import { PaymentMetod } from './entities/payment-metod.entity';
-import { DATA_SOURCE, PAYMENT_METOD_REPOSITORY } from '../constants';
+import { PaymentMethod } from './entities/payment-metod.entity';
+import { DATA_SOURCE, PAYMENT_METHOD_REPOSITORY } from '../constants';
 
 export const paymentMetodsProviders = [
   {
-    provide: PAYMENT_METOD_REPOSITORY,
+    provide: PAYMENT_METHOD_REPOSITORY,
     useFactory: (dataSource: DataSource) =>
-      dataSource.getRepository(PaymentMetod),
+      dataSource.getRepository(PaymentMethod),
     inject: [DATA_SOURCE],
   },
 ];

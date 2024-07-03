@@ -21,12 +21,15 @@ export class DistributorRelationsService {
   ) {}
 
   async findAll(): Promise<DistributorRelation[]> {
-    return await this.distributorRelationRepository.find();
+    return await this.distributorRelationRepository.find({
+      relations: ['distributor'],
+    });
   }
 
   async findOne(id: number): Promise<DistributorRelation> {
     return await this.distributorRelationRepository.findOne({
       where: { DistributorID: id },
+      relations: ['distributor'],
     });
   }
 

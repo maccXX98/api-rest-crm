@@ -16,6 +16,7 @@ import { ProductVariantsModule } from './product-variants/product-variants.modul
 import { CustomersModule } from './customers/customers.module';
 import { PaymentMetodsModule } from './payment-metods/payment-metods.module';
 import { CitiesModule } from './cities/cities.module';
+import { CustomerOrdersModule } from './customer-orders/customer-orders.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { CitiesModule } from './cities/cities.module';
     CustomersModule,
     PaymentMetodsModule,
     CitiesModule,
+    CustomerOrdersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

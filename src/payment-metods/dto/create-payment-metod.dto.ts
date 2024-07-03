@@ -4,7 +4,7 @@ export class CreatePaymentMetodDto {
   @IsNotEmpty()
   @IsString()
   @Length(1, 150)
-  metod: string;
+  method: string;
 
   @IsNotEmpty()
   @IsString()

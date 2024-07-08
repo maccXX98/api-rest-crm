@@ -37,4 +37,11 @@ export class CreateUsersDto {
 
   @IsOptional()
   Photo: Buffer;
+
+  @IsString()
+  @Length(1, 100)
+  @Matches(/^[a-zA-Z\s]*$/, {
+    message: 'El rol solo puede contener letras y espacios',
+  })
+  Role: string;
 }

@@ -25,6 +25,9 @@ export class User {
   @Column({ type: 'binary', nullable: true })
   Photo: Buffer;
 
+  @Column({ length: 100 })
+  Role: string;
+
   @CreateDateColumn()
   createdAt: Date;
 

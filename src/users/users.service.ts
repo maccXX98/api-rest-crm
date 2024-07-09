@@ -58,6 +58,13 @@ export class UsersService {
     });
   }
 
+  async findByLogin(login: string) {
+    return this.userRepository.findOne({
+      where: [{ Username: login }, { Email: login }],
+      withDeleted: false,
+    });
+  }
+
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     await this.userRepository.update({ UserID: id }, updateUserDto);
     const updatedUser = await this.userRepository.findOne({

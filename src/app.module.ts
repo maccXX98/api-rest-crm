@@ -19,6 +19,8 @@ import { CitiesModule } from './cities/cities.module';
 import { CustomerOrdersModule } from './customer-orders/customer-orders.module';
 import { AuthModule } from './auth/auth.module';
 import { CustomerOrderDetailsModule } from './customer-order-details/customer-order-details.module';
+import { AuthGuard } from './auth/auth.guard';
+import { APP_GUARD } from '@nestjs/core/constants';
 
 @Module({
   imports: [
@@ -42,6 +44,12 @@ import { CustomerOrderDetailsModule } from './customer-order-details/customer-or
     CustomerOrderDetailsModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+  ],
 })
 export class AppModule {}

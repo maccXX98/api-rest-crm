@@ -28,6 +28,15 @@ export class User {
   @Column({ length: 100 })
   Role: string;
 
+  @Column({ length: 150 })
+  Username: string;
+
+  @Column({ length: 100 })
+  Email: string;
+
+  @Column({ length: 150 })
+  Password: string;
+
   @CreateDateColumn()
   createdAt: Date;
 

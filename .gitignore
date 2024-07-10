@@ -37,3 +37,5 @@ lerna-debug.log*
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+client_secret_297916934080-af8mo9db30d7m8a8mm6igmubhn6cn5tb.apps.googleusercontent.com.json
+pnpm-lock.yaml

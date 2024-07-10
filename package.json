@@ -1,8 +1,8 @@
 {
   "name": "api_rest_titulacion",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "API-Rest del CRM",
+  "author": "Mauro Castillo",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {

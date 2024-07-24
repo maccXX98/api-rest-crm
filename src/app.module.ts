@@ -19,7 +19,7 @@ import { CitiesModule } from './cities/cities.module';
 import { CustomerOrdersModule } from './customer-orders/customer-orders.module';
 import { AuthModule } from './auth/auth.module';
 import { CustomerOrderDetailsModule } from './customer-order-details/customer-order-details.module';
-import { AuthGuard } from './auth/auth.guard';
+import { AuthGuard } from './auth/guards/auth.guard';
 import { APP_GUARD } from '@nestjs/core/constants';
 
 @Module({

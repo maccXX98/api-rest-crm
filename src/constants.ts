@@ -18,5 +18,3 @@ export const CITY_REPOSITORY = 'CITY_REPOSITORY';
 export const CUSTOMER_ORDER_REPOSITORY = 'CUSTOMER_ORDER_REPOSITORY';
 export const CUSTOMER_ORDER_DETAIL_REPOSITORY =
   'CUSTOMER_ORDER_DETAIL_REPOSITORY';
-
-export const jwtConstants = { secret: 'jasonwebtoken' };

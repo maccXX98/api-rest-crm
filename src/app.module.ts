@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ProductsModule } from './products/products.module';
@@ -21,9 +22,21 @@ import { AuthModule } from './auth/auth.module';
 import { CustomerOrderDetailsModule } from './customer-order-details/customer-order-details.module';
 import { AuthGuard } from './auth/guards/auth.guard';
 import { APP_GUARD } from '@nestjs/core/constants';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env',
+    }),
+    ThrottlerModule.forRoot([
+      {
+        name: 'short',
+        ttl: 60000,
+        limit: 10,
+      },
+    ]),
     ProductsModule,
     DistributorsModule,
     DatabaseModule,

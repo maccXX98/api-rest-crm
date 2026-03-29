@@ -3,12 +3,14 @@ import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../users/entities/user.entity';
+import { EnvConfig } from '../config/env.validation';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
+    private readonly envConfig: EnvConfig,
   ) {}
 
   async validateUser(
@@ -25,15 +27,15 @@ export class AuthService {
     if (!user || !(await bcrypt.compare(pass, user.Password))) {
       throw new UnauthorizedException();
     }
-    const payload = { sub: user.UserID, username: user.Username };
+    const payload = { sub: user.UserID, username: user.Username, role: user.Role };
     return {
       access_token: await this.jwtService.signAsync(payload, {
         expiresIn: '1h',
-        secret: process.env.JWT_SECRET_TOKEN,
+        secret: this.envConfig.jwtSecretToken,
       }),
       refresh_token: await this.jwtService.signAsync(payload, {
-        expiresIn: '180d',
-        secret: process.env.JWT_REFRESH_TOKEN,
+        expiresIn: '7d',
+        secret: this.envConfig.jwtRefreshToken,
       }),
       firstname: user.FirstName,
       photo: user.Photo,
@@ -42,15 +44,15 @@ export class AuthService {
   }
 
   async validateRefreshToken(user: User) {
-    const payload = { sub: user.UserID, username: user.Username };
+    const payload = { sub: user.UserID, username: user.Username, role: user.Role };
     return {
       access_token: await this.jwtService.signAsync(payload, {
         expiresIn: '1h',
-        secret: process.env.JWT_SECRET_TOKEN,
+        secret: this.envConfig.jwtSecretToken,
       }),
       refresh_token: await this.jwtService.signAsync(payload, {
-        expiresIn: '180d',
-        secret: process.env.JWT_REFRESH_TOKEN,
+        expiresIn: '7d',
+        secret: this.envConfig.jwtRefreshToken,
       }),
     };
   }

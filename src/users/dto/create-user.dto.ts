@@ -6,7 +6,9 @@ import {
   MaxLength,
   Length,
   IsEmail,
+  IsEnum,
 } from 'class-validator';
+import { Role } from '../enums/role.enum';
 
 export class CreateUsersDto {
   @IsString()
@@ -39,12 +41,8 @@ export class CreateUsersDto {
   @IsOptional()
   Photo: Buffer;
 
-  @IsString()
-  @Length(3, 100)
-  @Matches(/^[a-zA-Z\s]*$/, {
-    message: 'El rol solo puede contener letras y espacios',
-  })
-  Role: string;
+  @IsEnum(Role)
+  Role: Role;
 
   @IsString()
   @MinLength(3, {

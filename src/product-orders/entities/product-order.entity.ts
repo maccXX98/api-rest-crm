@@ -11,6 +11,7 @@ import {
   JoinColumn,
   Relation,
   CreateDateColumn,
+  Index,
 } from 'typeorm';
 
 @Entity()
@@ -18,9 +19,11 @@ export class ProductOrder {
   @PrimaryGeneratedColumn('increment')
   ProductOrderID: number;
 
+  @Index()
   @Column({ type: 'uuid' })
   UserID: string;
 
+  @Index()
   @Column()
   DistributorID: number;
 

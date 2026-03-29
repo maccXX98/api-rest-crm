@@ -5,12 +5,15 @@ import {
   HttpStatus,
   HttpCode,
   Request,
+  UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { Public } from './public.decorator';
+import { ThrottlerGuard } from '@nestjs/throttler';
 
 @Controller('auth')
+@UseGuards(ThrottlerGuard)
 export class AuthController {
   constructor(private authService: AuthService) {}
 

@@ -19,7 +19,7 @@ export class UsersService {
     const newUser = this.userRepository.create({
       ...rest,
       Password: hashedPassword,
-    });
+    } as Partial<User>);
     return this.userRepository.save(newUser);
   }
 
@@ -62,6 +62,7 @@ export class UsersService {
     return this.userRepository.findOne({
       where: [{ Username: login }, { Email: login }],
       withDeleted: false,
+      select: ['UserID', 'Username', 'Email', 'Password', 'FirstName', 'LastName', 'Phone', 'Photo', 'Role'],
     });
   }
 

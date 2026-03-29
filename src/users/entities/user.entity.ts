@@ -6,7 +6,10 @@ import {
   DeleteDateColumn,
   OneToMany,
   CreateDateColumn,
+  Index,
 } from 'typeorm';
+import { Exclude } from 'class-transformer';
+import { Role } from '../enums/role.enum';
 
 @Entity()
 export class User {
@@ -25,15 +28,22 @@ export class User {
   @Column({ type: 'bytea', nullable: true })
   Photo: Buffer;
 
-  @Column({ length: 100 })
-  Role: string;
+  @Column({
+    type: 'enum',
+    enum: Role,
+    default: Role.SALES,
+  })
+  Role: Role;
 
+  @Index()
   @Column({ length: 150 })
   Username: string;
 
+  @Index()
   @Column({ length: 100 })
   Email: string;
 
+  @Exclude()
   @Column({ length: 150 })
   Password: string;
 

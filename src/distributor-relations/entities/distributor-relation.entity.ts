@@ -12,7 +12,7 @@ import { Distributor } from '../../distributors/entities/distributor.entity';
 
 @Entity()
 export class DistributorRelation {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('increment')
   DistributorRelationid: number;
 
   @Column()

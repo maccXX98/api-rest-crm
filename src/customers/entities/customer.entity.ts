@@ -10,7 +10,7 @@ import {
 
 @Entity()
 export class Customer {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('increment')
   CustomerID: number;
 
   @Column({ length: 150 })

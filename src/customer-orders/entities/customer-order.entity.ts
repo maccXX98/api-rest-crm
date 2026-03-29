@@ -16,7 +16,7 @@ import {
 
 @Entity()
 export class CustomerOrder {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('increment')
   CustomerOrderID: number;
 
   @Column()

@@ -11,7 +11,7 @@ import {
 
 @Entity()
 export class Category {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('increment')
   CategoryID: number;
 
   @Column({ length: 150 })

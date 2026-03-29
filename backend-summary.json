@@ -1,0 +1,809 @@
+{
+    "introduction": "This backend serves as the API for a Customer Relationship Management (CRM) system. It provides a comprehensive set of endpoints to manage products, customers, orders, inventory, and other essential business operations. The API is designed to support a frontend application that will interact with this data to provide a complete CRM solution.",
+    "architecture": {
+        "framework": "NestJS",
+        "language": "TypeScript",
+        "database": {
+            "type": "MySQL",
+            "orm": "TypeORM"
+        },
+        "server": "Fastify",
+        "authentication": "JWT (JSON Web Tokens)",
+        "validation": "class-validator",
+        "structure": "Modular architecture with separate modules for each domain entity"
+    },
+    "endpoints": [
+        {
+            "group": "Authentication",
+            "routes": [
+                {
+                    "path": "/api/auth/login",
+                    "method": "POST",
+                    "description": "Authenticates a user and returns access and refresh tokens",
+                    "isPublic": true,
+                    "parameters": {
+                        "body": {
+                            "login": "Username or email",
+                            "password": "User password"
+                        }
+                    },
+                    "response": {
+                        "access_token": "JWT token for API access (expires in 1 hour)",
+                        "refresh_token": "JWT token for refreshing access (expires in 180 days)",
+                        "firstname": "User's first name",
+                        "photo": "User's profile photo",
+                        "role": "User's role in the system"
+                    },
+                    "example": {
+                        "request": {
+                            "login": "admin",
+                            "password": "password123"
+                        },
+                        "response": {
+                            "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                            "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                            "firstname": "Admin",
+                            "photo": "[binary data]",
+                            "role": "administrator"
+                        }
+                    }
+                },
+                {
+                    "path": "/api/auth/refresh",
+                    "method": "POST",
+                    "description": "Refreshes the access token using a valid refresh token",
+                    "isPublic": true,
+                    "parameters": {
+                        "header": {
+                            "Authorization": "Bearer [refresh_token]"
+                        }
+                    },
+                    "response": {
+                        "access_token": "New JWT access token",
+                        "refresh_token": "New JWT refresh token"
+                    },
+                    "example": {
+                        "request": {
+                            "headers": {
+                                "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                            }
+                        },
+                        "response": {
+                            "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                            "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "group": "Products",
+            "routes": [
+                {
+                    "path": "/api/products",
+                    "method": "GET",
+                    "description": "Retrieves all products",
+                    "response": "Array of product objects",
+                    "example": {
+                        "response": [
+                            {
+                                "ProductID": 1,
+                                "Name": "Product Name",
+                                "NickName": "Product Nickname",
+                                "Description": "Product description",
+                                "Template": "Product template",
+                                "Image": "product-image.jpg",
+                                "createdAt": "2023-01-01T00:00:00.000Z",
+                                "deletedAt": null,
+                                "distributor": {
+                                    "DistributorID": 1,
+                                    "Name": "Distributor Name"
+                                },
+                                "categories": [
+                                    {
+                                        "CategoryID": 1,
+                                        "Name": "Category Name"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                },
+                {
+                    "path": "/api/products/:id",
+                    "method": "GET",
+                    "description": "Retrieves a specific product by ID",
+                    "parameters": {
+                        "path": {
+                            "id": "Product ID (number)"
+                        }
+                    },
+                    "response": "Product object",
+                    "example": {
+                        "request": {
+                            "params": {
+                                "id": "1"
+                            }
+                        },
+                        "response": {
+                            "ProductID": 1,
+                            "Name": "Product Name",
+                            "NickName": "Product Nickname",
+                            "Description": "Product description",
+                            "Template": "Product template",
+                            "Image": "product-image.jpg",
+                            "createdAt": "2023-01-01T00:00:00.000Z",
+                            "deletedAt": null,
+                            "distributor": {
+                                "DistributorID": 1,
+                                "Name": "Distributor Name"
+                            },
+                            "categories": [
+                                {
+                                    "CategoryID": 1,
+                                    "Name": "Category Name"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "path": "/api/products",
+                    "method": "POST",
+                    "description": "Creates a new product",
+                    "parameters": {
+                        "body": {
+                            "Name": "Product name (string, 3-150 chars, required)",
+                            "NickName": "Product nickname (string, 3-150 chars)",
+                            "Description": "Product description (string)",
+                            "Template": "Product template (string)",
+                            "Image": "Product image path (string, 1-255 chars)",
+                            "DistributorID": "Distributor ID (number, min 1, required)",
+                            "CategoryID": "Array of category IDs (optional)"
+                        }
+                    },
+                    "response": "Created product object",
+                    "example": {
+                        "request": {
+                            "body": {
+                                "Name": "New Product",
+                                "NickName": "NP",
+                                "Description": "A new product description",
+                                "Template": "<p>Product template</p>",
+                                "Image": "new-product.jpg",
+                                "DistributorID": 1,
+                                "CategoryID": [
+                                    1,
+                                    2
+                                ]
+                            }
+                        },
+                        "response": {
+                            "ProductID": 2,
+                            "Name": "New Product",
+                            "NickName": "NP",
+                            "Description": "A new product description",
+                            "Template": "<p>Product template</p>",
+                            "Image": "new-product.jpg",
+                            "createdAt": "2023-01-02T00:00:00.000Z",
+                            "deletedAt": null,
+                            "distributor": {
+                                "DistributorID": 1
+                            },
+                            "categories": [
+                                {
+                                    "CategoryID": 1
+                                },
+                                {
+                                    "CategoryID": 2
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "path": "/api/products/:id",
+                    "method": "PATCH",
+                    "description": "Updates a specific product",
+                    "parameters": {
+                        "path": {
+                            "id": "Product ID (number)"
+                        },
+                        "body": "Same as POST but all fields are optional"
+                    },
+                    "response": "Updated product object",
+                    "example": {
+                        "request": {
+                            "params": {
+                                "id": "1"
+                            },
+                            "body": {
+                                "Name": "Updated Product Name"
+                            }
+                        },
+                        "response": {
+                            "ProductID": 1,
+                            "Name": "Updated Product Name",
+                            "NickName": "Product Nickname",
+                            "Description": "Product description",
+                            "Template": "Product template",
+                            "Image": "product-image.jpg",
+                            "createdAt": "2023-01-01T00:00:00.000Z",
+                            "deletedAt": null
+                        }
+                    }
+                },
+                {
+                    "path": "/api/products/:id",
+                    "method": "DELETE",
+                    "description": "Soft deletes a product (sets deletedAt)",
+                    "parameters": {
+                        "path": {
+                            "id": "Product ID (number)"
+                        }
+                    },
+                    "response": "Success message or deleted product object",
+                    "example": {
+                        "request": {
+                            "params": {
+                                "id": "1"
+                            }
+                        },
+                        "response": {
+                            "affected": 1
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "group": "Customers",
+            "routes": [
+                {
+                    "path": "/api/customers",
+                    "method": "GET",
+                    "description": "Retrieves all customers",
+                    "response": "Array of customer objects",
+                    "example": {
+                        "response": [
+                            {
+                                "CustomerID": 1,
+                                "name": "Customer Name",
+                                "phone": "123-456-7890",
+                                "createdAt": "2023-01-01T00:00:00.000Z",
+                                "deletedAt": null
+                            }
+                        ]
+                    }
+                },
+                {
+                    "path": "/api/customers/:id",
+                    "method": "GET",
+                    "description": "Retrieves a specific customer by ID",
+                    "parameters": {
+                        "path": {
+                            "id": "Customer ID (number)"
+                        }
+                    },
+                    "response": "Customer object",
+                    "example": {
+                        "request": {
+                            "params": {
+                                "id": "1"
+                            }
+                        },
+                        "response": {
+                            "CustomerID": 1,
+                            "name": "Customer Name",
+                            "phone": "123-456-7890",
+                            "createdAt": "2023-01-01T00:00:00.000Z",
+                            "deletedAt": null,
+                            "customerOrders": [
+                                {
+                                    "CustomerOrderID": 1,
+                                    "OrderDate": "2023-01-02T00:00:00.000Z"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "path": "/api/customers",
+                    "method": "POST",
+                    "description": "Creates a new customer",
+                    "parameters": {
+                        "body": {
+                            "name": "Customer name (string, required)",
+                            "phone": "Customer phone (string, required)"
+                        }
+                    },
+                    "response": "Created customer object",
+                    "example": {
+                        "request": {
+                            "body": {
+                                "name": "New Customer",
+                                "phone": "987-654-3210"
+                            }
+                        },
+                        "response": {
+                            "CustomerID": 2,
+                            "name": "New Customer",
+                            "phone": "987-654-3210",
+                            "createdAt": "2023-01-03T00:00:00.000Z",
+                            "deletedAt": null
+                        }
+                    }
+                },
+                {
+                    "path": "/api/customers/:id",
+                    "method": "PATCH",
+                    "description": "Updates a specific customer",
+                    "parameters": {
+                        "path": {
+                            "id": "Customer ID (number)"
+                        },
+                        "body": "Same as POST but all fields are optional"
+                    },
+                    "response": "Updated customer object",
+                    "example": {
+                        "request": {
+                            "params": {
+                                "id": "1"
+                            },
+                            "body": {
+                                "phone": "555-555-5555"
+                            }
+                        },
+                        "response": {
+                            "CustomerID": 1,
+                            "name": "Customer Name",
+                            "phone": "555-555-5555",
+                            "createdAt": "2023-01-01T00:00:00.000Z",
+                            "deletedAt": null
+                        }
+                    }
+                },
+                {
+                    "path": "/api/customers/:id",
+                    "method": "DELETE",
+                    "description": "Soft deletes a customer (sets deletedAt)",
+                    "parameters": {
+                        "path": {
+                            "id": "Customer ID (number)"
+                        }
+                    },
+                    "response": "Success message or deleted customer object",
+                    "example": {
+                        "request": {
+                            "params": {
+                                "id": "1"
+                            }
+                        },
+                        "response": {
+                            "affected": 1
+                        }
+                    }
+                }
+            ]
+        }
+    ],
+    "business_logic": {
+        "core_functionalities": [
+            {
+                "name": "Product Management",
+                "description": "Allows creating, updating, and managing products with their associated distributors and categories. Products can have variants and be linked to other products."
+            },
+            {
+                "name": "Customer Management",
+                "description": "Manages customer information and their order history."
+            },
+            {
+                "name": "Order Processing",
+                "description": "Handles both customer orders (sales) and product orders (purchases from distributors). Each order contains detailed line items."
+            },
+            {
+                "name": "Inventory Management",
+                "description": "Tracks product stock levels, which are updated when orders are processed."
+            },
+            {
+                "name": "Distributor Relations",
+                "description": "Manages relationships with product distributors and suppliers."
+            },
+            {
+                "name": "Pricing",
+                "description": "Manages product pricing information, potentially with different price points."
+            }
+        ],
+        "workflows": [
+            {
+                "name": "User Authentication",
+                "steps": [
+                    "User submits login credentials",
+                    "System validates credentials against stored user data",
+                    "If valid, system generates access and refresh tokens",
+                    "Tokens are returned to the client for subsequent API calls",
+                    "Access token expires after 1 hour, refresh token after 180 days"
+                ]
+            },
+            {
+                "name": "Product Order Processing",
+                "steps": [
+                    "Create a product order with distributor information",
+                    "Add product order details (line items) to the order",
+                    "Process the order, which may update inventory levels",
+                    "Track order status through its lifecycle"
+                ]
+            },
+            {
+                "name": "Customer Order Processing",
+                "steps": [
+                    "Create a customer order with customer information",
+                    "Add customer order details (line items) to the order",
+                    "Process payment using one of the available payment methods",
+                    "Update inventory based on ordered items",
+                    "Track order fulfillment status"
+                ]
+            }
+        ]
+    },
+    "database": {
+        "type": "MySQL",
+        "orm": "TypeORM",
+        "entities": [
+            {
+                "name": "User",
+                "fields": [
+                    {
+                        "name": "UserID",
+                        "type": "uuid",
+                        "primary": true
+                    },
+                    {
+                        "name": "FirstName",
+                        "type": "string"
+                    },
+                    {
+                        "name": "LastName",
+                        "type": "string"
+                    },
+                    {
+                        "name": "Phone",
+                        "type": "string"
+                    },
+                    {
+                        "name": "Photo",
+                        "type": "binary"
+                    },
+                    {
+                        "name": "Role",
+                        "type": "string"
+                    },
+                    {
+                        "name": "Username",
+                        "type": "string"
+                    },
+                    {
+                        "name": "Email",
+                        "type": "string"
+                    },
+                    {
+                        "name": "Password",
+                        "type": "string"
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "date"
+                    },
+                    {
+                        "name": "deletedAt",
+                        "type": "date"
+                    }
+                ],
+                "relationships": [
+                    {
+                        "entity": "ProductOrder",
+                        "type": "OneToMany",
+                        "field": "productOrders"
+                    }
+                ]
+            },
+            {
+                "name": "Product",
+                "fields": [
+                    {
+                        "name": "ProductID",
+                        "type": "number",
+                        "primary": true
+                    },
+                    {
+                        "name": "Name",
+                        "type": "string"
+                    },
+                    {
+                        "name": "NickName",
+                        "type": "string"
+                    },
+                    {
+                        "name": "Description",
+                        "type": "text"
+                    },
+                    {
+                        "name": "Template",
+                        "type": "text"
+                    },
+                    {
+                        "name": "Image",
+                        "type": "string"
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "date"
+                    },
+                    {
+                        "name": "deletedAt",
+                        "type": "date"
+                    }
+                ],
+                "relationships": [
+                    {
+                        "entity": "Distributor",
+                        "type": "ManyToOne",
+                        "field": "distributor"
+                    },
+                    {
+                        "entity": "Category",
+                        "type": "ManyToMany",
+                        "field": "categories"
+                    },
+                    {
+                        "entity": "ProductVariant",
+                        "type": "OneToMany",
+                        "field": "variants"
+                    },
+                    {
+                        "entity": "ProductLink",
+                        "type": "OneToMany",
+                        "field": "productLinks"
+                    },
+                    {
+                        "entity": "Inventory",
+                        "type": "OneToMany",
+                        "field": "inventories"
+                    },
+                    {
+                        "entity": "Price",
+                        "type": "OneToMany",
+                        "field": "prices"
+                    },
+                    {
+                        "entity": "ProductOrderDetail",
+                        "type": "OneToMany",
+                        "field": "productOrderDetails"
+                    },
+                    {
+                        "entity": "CustomerOrderDetail",
+                        "type": "OneToMany",
+                        "field": "customerOrderDetails"
+                    }
+                ]
+            },
+            {
+                "name": "Customer",
+                "fields": [
+                    {
+                        "name": "CustomerID",
+                        "type": "number",
+                        "primary": true
+                    },
+                    {
+                        "name": "name",
+                        "type": "string"
+                    },
+                    {
+                        "name": "phone",
+                        "type": "string"
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "date"
+                    },
+                    {
+                        "name": "deletedAt",
+                        "type": "date"
+                    }
+                ],
+                "relationships": [
+                    {
+                        "entity": "CustomerOrder",
+                        "type": "OneToMany",
+                        "field": "customerOrders"
+                    }
+                ]
+            },
+            {
+                "name": "Distributor",
+                "fields": [
+                    {
+                        "name": "DistributorID",
+                        "type": "number",
+                        "primary": true
+                    },
+                    {
+                        "name": "Name",
+                        "type": "string"
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "date"
+                    },
+                    {
+                        "name": "deletedAt",
+                        "type": "date"
+                    }
+                ],
+                "relationships": [
+                    {
+                        "entity": "Product",
+                        "type": "OneToMany",
+                        "field": "products"
+                    },
+                    {
+                        "entity": "ProductOrder",
+                        "type": "OneToMany",
+                        "field": "productOrders"
+                    },
+                    {
+                        "entity": "DistributorRelation",
+                        "type": "OneToMany",
+                        "field": "distributorRelations"
+                    }
+                ]
+            },
+            {
+                "name": "Category",
+                "fields": [
+                    {
+                        "name": "CategoryID",
+                        "type": "number",
+                        "primary": true
+                    },
+                    {
+                        "name": "Name",
+                        "type": "string"
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "date"
+                    },
+                    {
+                        "name": "deletedAt",
+                        "type": "date"
+                    }
+                ],
+                "relationships": [
+                    {
+                        "entity": "Product",
+                        "type": "ManyToMany",
+                        "field": "products"
+                    }
+                ]
+            },
+            {
+                "name": "CustomerOrder",
+                "fields": [
+                    {
+                        "name": "CustomerOrderID",
+                        "type": "number",
+                        "primary": true
+                    },
+                    {
+                        "name": "OrderDate",
+                        "type": "date"
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "date"
+                    },
+                    {
+                        "name": "deletedAt",
+                        "type": "date"
+                    }
+                ],
+                "relationships": [
+                    {
+                        "entity": "Customer",
+                        "type": "ManyToOne",
+                        "field": "customer"
+                    },
+                    {
+                        "entity": "CustomerOrderDetail",
+                        "type": "OneToMany",
+                        "field": "customerOrderDetails"
+                    },
+                    {
+                        "entity": "PaymentMetod",
+                        "type": "ManyToOne",
+                        "field": "paymentMetod"
+                    }
+                ]
+            },
+            {
+                "name": "ProductOrder",
+                "fields": [
+                    {
+                        "name": "ProductOrderID",
+                        "type": "number",
+                        "primary": true
+                    },
+                    {
+                        "name": "OrderDate",
+                        "type": "date"
+                    },
+                    {
+                        "name": "createdAt",
+                        "type": "date"
+                    },
+                    {
+                        "name": "deletedAt",
+                        "type": "date"
+                    }
+                ],
+                "relationships": [
+                    {
+                        "entity": "Distributor",
+                        "type": "ManyToOne",
+                        "field": "distributor"
+                    },
+                    {
+                        "entity": "User",
+                        "type": "ManyToOne",
+                        "field": "user"
+                    },
+                    {
+                        "entity": "ProductOrderDetail",
+                        "type": "OneToMany",
+                        "field": "productOrderDetails"
+                    }
+                ]
+            }
+        ]
+    },
+    "security": {
+        "authentication": {
+            "mechanism": "JWT (JSON Web Tokens)",
+            "implementation": "NestJS JWT module with custom AuthGuard",
+            "token_types": [
+                {
+                    "type": "access_token",
+                    "purpose": "API access authorization",
+                    "expiration": "1 hour",
+                    "storage": "Client-side (typically in memory or secure storage)"
+                },
+                {
+                    "type": "refresh_token",
+                    "purpose": "Obtaining new access tokens without re-authentication",
+                    "expiration": "180 days",
+                    "storage": "Client-side (secure storage)"
+                }
+            ]
+        },
+        "authorization": {
+            "mechanism": "Role-based access control",
+            "roles": [
+                "User roles stored in the User entity"
+            ]
+        },
+        "password_security": {
+            "hashing": "bcrypt",
+            "validation": "Server-side validation using class-validator"
+        },
+        "api_security": {
+            "global_prefix": "All endpoints are prefixed with /api",
+            "public_endpoints": [
+                "/api/auth/login",
+                "/api/auth/refresh"
+            ],
+            "protected_endpoints": "All other endpoints require a valid JWT token"
+        }
+    }
+}

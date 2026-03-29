@@ -14,7 +14,7 @@ import {
 
 @Entity()
 export class Distributor {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('increment')
   DistributorID: number;
 
   @Column({ length: 150 })

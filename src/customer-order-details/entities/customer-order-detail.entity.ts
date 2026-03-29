@@ -12,7 +12,7 @@ import {
 
 @Entity()
 export class CustomerOrderDetail {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('increment')
   CustomerOrderDetailID: number;
 
   @Column()

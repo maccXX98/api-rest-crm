@@ -13,7 +13,7 @@ import {
 
 @Entity()
 export class ProductLink {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('increment')
   ProductLinkID: number;
 
   @IsNotEmpty()

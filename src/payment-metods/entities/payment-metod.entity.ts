@@ -10,7 +10,7 @@ import {
 
 @Entity()
 export class PaymentMethod {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('increment')
   PaymentMethodID: number;
 
   @Column({ length: 150 })

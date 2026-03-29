@@ -22,7 +22,7 @@ export class User {
   @Column({ length: 25 })
   Phone: string;
 
-  @Column({ type: 'binary', nullable: true })
+  @Column({ type: 'bytea', nullable: true })
   Photo: Buffer;
 
   @Column({ length: 100 })

@@ -22,7 +22,7 @@ import {
 
 @Entity()
 export class Product {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('increment')
   ProductID: number;
 
   @IsNotEmpty()

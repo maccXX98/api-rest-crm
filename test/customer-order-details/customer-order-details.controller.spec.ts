@@ -11,7 +11,9 @@ describe('CustomerOrderDetailsController', () => {
       providers: [CustomerOrderDetailsService],
     }).compile();
 
-    controller = module.get<CustomerOrderDetailsController>(CustomerOrderDetailsController);
+    controller = module.get<CustomerOrderDetailsController>(
+      CustomerOrderDetailsController,
+    );
   });
 
   it('should be defined', () => {

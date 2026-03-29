@@ -10,7 +10,7 @@ import {
 
 @Entity()
 export class City {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('increment')
   CityID: number;
 
   @Column({ length: 150 })

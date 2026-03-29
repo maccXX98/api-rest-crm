@@ -13,7 +13,7 @@ import {
 
 @Entity()
 export class Inventory {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('increment')
   InventoryID: number;
 
   @IsNotEmpty()

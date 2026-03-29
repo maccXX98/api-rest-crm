@@ -12,7 +12,7 @@ import {
 
 @Entity()
 export class ProductVariant {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('increment')
   ProductVariantID: number;
 
   @IsNotEmpty()

@@ -11,7 +11,7 @@ import {
 
 @Entity()
 export class Price {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('increment')
   PriceID: number;
 
   @Column('decimal', { precision: 10, scale: 2 })

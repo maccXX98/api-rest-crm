@@ -1,36 +1,14 @@
 import 'reflect-metadata';
-import { DataSource } from 'typeorm';
 import { config } from 'dotenv';
 import * as bcrypt from 'bcrypt';
-config();
+import { Client } from 'pg';
 
-const dataSource = new DataSource({
-  type: 'postgres',
-  host: process.env.DB_HOST,
-  port: Number(process.env.DB_PORT),
-  username: process.env.DB_USERNAME,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_DATABASE,
-  entities: [__dirname + '/../../**/*.entity{.ts,.js}'],
-});
+config();
 
 enum Role {
   ADMIN = 'administrator',
   MARKETING = 'marketing',
   SALES = 'sales',
-}
-
-interface User {
-  UserID?: string;
-  FirstName: string;
-  LastName: string;
-  Phone: string;
-  Photo?: Buffer;
-  Role: Role;
-  Username: string;
-  Email: string;
-  Password: string;
-  createdAt?: Date;
 }
 
 async function seedSuperadmin() {
@@ -42,34 +20,42 @@ async function seedSuperadmin() {
   console.warn('⚠️ WARNING: Running superadmin seeder in development mode');
   console.warn('⚠️ This will create/update a superadmin user');
 
+  const client = new Client({
+    host: process.env.DB_HOST,
+    port: Number(process.env.DB_PORT),
+    user: process.env.DB_USERNAME,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DATABASE,
+  });
+
   try {
-    await dataSource.initialize();
+    await client.connect();
     console.log('✅ Database connected');
-
-    const repository = dataSource.getRepository('User');
-
-    const existingAdmin = await repository.findOne({
-      where: { Username: 'superadmin' },
-    });
 
     const hashedPassword = await bcrypt.hash('SuperAdmin123!', 15);
 
-    const superadmin: User = {
-      FirstName: 'Super',
-      LastName: 'Admin',
-      Phone: '0000000000',
-      Role: Role.ADMIN,
-      Username: 'superadmin',
-      Email: 'superadmin@crm.local',
-      Password: hashedPassword,
-    };
+    // Check if user exists
+    const existingResult = await client.query(
+      'SELECT "UserID" FROM "user" WHERE "Username" = $1',
+      ['superadmin'],
+    );
 
-    if (existingAdmin) {
-      superadmin.UserID = existingAdmin.UserID;
-      await repository.save(superadmin);
+    if (existingResult.rows.length > 0) {
+      // Update existing user
+      await client.query(
+        `UPDATE "user" SET "FirstName" = $1, "LastName" = $2, "Phone" = $3, "Role" = $4, "Email" = $5, "Password" = $6 WHERE "Username" = $7`,
+        ['Super', 'Admin', '0000000000', Role.ADMIN, 'superadmin@crm.local', hashedPassword, 'superadmin'],
+      );
       console.log('✅ Superadmin user updated');
     } else {
-      await repository.save(superadmin);
+      // Insert new user with UUID
+      const { v4: uuidv4 } = await import('uuid');
+      const userId = uuidv4();
+      await client.query(
+        `INSERT INTO "user" ("UserID", "FirstName", "LastName", "Phone", "Role", "Username", "Email", "Password")
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+        [userId, 'Super', 'Admin', '0000000000', Role.ADMIN, 'superadmin', 'superadmin@crm.local', hashedPassword],
+      );
       console.log('✅ Superadmin user created');
     }
 
@@ -77,11 +63,11 @@ async function seedSuperadmin() {
     console.log('   Username: superadmin');
     console.log('   Password: SuperAdmin123!');
 
-    await dataSource.destroy();
+    await client.end();
     process.exit(0);
   } catch (error) {
     console.error('❌ Seeder failed:', error);
-    await dataSource.destroy();
+    await client.end();
     process.exit(1);
   }
 }

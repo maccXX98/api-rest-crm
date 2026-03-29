@@ -4,7 +4,7 @@ import {
   Body,
   HttpStatus,
   HttpCode,
-  Request,
+  Headers,
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -27,7 +27,7 @@ export class AuthController {
   @Public()
   @HttpCode(HttpStatus.OK)
   @Post('refresh')
-  async refreshToken(@Request() req) {
-    return this.authService.validateRefreshToken(req.user);
+  async refreshToken(@Body('refresh_token') refreshToken: string) {
+    return this.authService.validateRefreshToken(refreshToken);
   }
 }

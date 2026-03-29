@@ -14,7 +14,7 @@ export const databaseProviders = [
         database: process.env.DB_DATABASE,
         entities: [__dirname + '/../**/*.entity{.ts,.js}'],
         synchronize: false,
-        migrations: ['dist/migrations/*.js'],
+        migrations: [__dirname + '/../../migrations/*{.ts,.js}'],
         migrationsRun: true,
       });
 

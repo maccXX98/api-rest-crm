@@ -42,5 +42,3 @@ export class AllExceptionsFilter implements ExceptionFilter {
     response.status(status).send(errorResponse);
   }
 }
-
-export { HttpExceptionFilter } from './http-exception.filter';

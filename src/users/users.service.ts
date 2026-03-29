@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUsersDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { USER_REPOSITORY } from '../constants';
@@ -73,7 +73,7 @@ export class UsersService {
       select: ['UserID', 'FirstName', 'LastName', 'Phone', 'Photo', 'Role'],
     });
     if (!updatedUser) {
-      throw new Error(`User with ID ${id} not found`);
+      throw new NotFoundException(`User with ID ${id} not found`);
     }
     return updatedUser;
   }
@@ -83,7 +83,7 @@ export class UsersService {
       UserID: id,
     });
     if (!deleteResult.affected) {
-      throw new Error(`User with ID ${id} not found`);
+      throw new NotFoundException(`User with ID ${id} not found`);
     }
   }
 

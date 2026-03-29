@@ -7,7 +7,6 @@ import {
 } from '@nestjs/platform-fastify';
 import {
   AllExceptionsFilter,
-  HttpExceptionFilter,
 } from './common/filters/all-exceptions.filter';
 import { ThrottlerExceptionFilter } from './common/filters/throttler-exception.filter';
 import { AppModule } from './app.module';
@@ -27,7 +26,6 @@ async function bootstrap() {
     }),
   );
   app.useGlobalFilters(new AllExceptionsFilter());
-  app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalFilters(new ThrottlerExceptionFilter());
   app.setGlobalPrefix('api');
   await app.listen(3000, '0.0.0.0');

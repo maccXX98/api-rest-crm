@@ -57,6 +57,5 @@ export class CustomerOrder {
     (customerOrderDetail) => customerOrderDetail.customerOrder,
     { lazy: true },
   )
-  @JoinColumn({ name: 'CustomerOrderID' })
   customerOrderDetails: Relation<CustomerOrderDetail>[];
 }

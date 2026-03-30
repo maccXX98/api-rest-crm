@@ -10,7 +10,7 @@ const client = new Client({
 });
 
 async function runSeed() {
-  const sql = require('fs').readFileSync('D:/TITULACION_UNI/seeds/seed-novex-complete.sql', 'utf8');
+  const sql = require('fs').readFileSync(__dirname + '/seed-novex-complete.sql', 'utf8');
   
   // Split on semicolons, filter comments/empty
   const lines = sql.split('\n');

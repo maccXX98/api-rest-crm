@@ -36,13 +36,11 @@ export class Distributor {
   deletedAt?: Date;
 
   @OneToMany(() => Product, (product) => product.distributor, { lazy: true })
-  @JoinColumn()
   products: Relation<Product>[];
 
   @OneToMany(() => ProductOrder, (productOrder) => productOrder.distributor, {
     lazy: true,
   })
-  @JoinColumn()
   productOrders: Relation<ProductOrder>[];
 
   @OneToMany(
@@ -52,6 +50,5 @@ export class Distributor {
       lazy: true,
     },
   )
-  @JoinColumn()
   distributorRelation: Relation<DistributorRelation>[];
 }

@@ -8,18 +8,13 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
   Relation,
+  JoinColumn,
 } from 'typeorm';
 
 @Entity()
 export class CustomerOrderDetail {
   @PrimaryGeneratedColumn('increment')
   CustomerOrderDetailID: number;
-
-  @Column()
-  CustomerOrderID: number;
-
-  @Column()
-  ProductID: number;
 
   @Column()
   Quantity: number;
@@ -32,11 +27,15 @@ export class CustomerOrderDetail {
 
   @ManyToOne(
     () => CustomerOrder,
-    (customerOrder) => customerOrder.CustomerOrderID,
+    (customerOrder) => customerOrder.customerOrderDetails,
     { lazy: true },
   )
+  @JoinColumn({ name: 'CustomerOrderID' })
   customerOrder: Relation<CustomerOrder>;
 
-  @ManyToOne(() => Product, (product) => product.ProductID, { lazy: true })
+  @ManyToOne(() => Product, (product) => product.customerOrderDetails, {
+    lazy: true,
+  })
+  @JoinColumn({ name: 'ProductID' })
   product: Relation<Product>;
 }

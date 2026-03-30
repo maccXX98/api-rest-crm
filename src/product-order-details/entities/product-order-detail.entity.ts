@@ -34,7 +34,7 @@ export class ProductOrderDetail {
   @DeleteDateColumn()
   deletedAt?: Date;
 
-  @ManyToOne(() => Product, (product) => product.productOrderDetail, {
+  @ManyToOne(() => Product, (product) => product.productOrderDetails, {
     lazy: true,
   })
   @JoinColumn({ name: 'ProductID' })

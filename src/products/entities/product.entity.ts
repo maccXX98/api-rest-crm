@@ -13,10 +13,10 @@ import {
   Column,
   DeleteDateColumn,
   ManyToOne,
-  JoinColumn,
   OneToMany,
-  Relation,
   ManyToMany,
+  JoinColumn,
+  Relation,
   CreateDateColumn,
 } from 'typeorm';
 
@@ -47,26 +47,26 @@ export class Product {
   @DeleteDateColumn()
   deletedAt?: Date;
 
+  // =========================================
+  // Owning side: @ManyToOne (has @JoinColumn)
+  // =========================================
   @ManyToOne(() => Distributor, (distributor) => distributor.products, {
     lazy: true,
   })
   @JoinColumn({ name: 'DistributorID' })
   distributor: Relation<Distributor>;
 
+  // =========================================
+  // Inverse side: @OneToMany (NO @JoinColumn)
+  // =========================================
   @OneToMany(
     () => ProductOrderDetail,
     (productOrderDetail) => productOrderDetail.product,
-    {
-      lazy: true,
-    },
+    { lazy: true },
   )
-  @JoinColumn()
-  productOrderDetail: Relation<ProductOrderDetail>[];
+  productOrderDetails: Relation<ProductOrderDetail>[];
 
-  @OneToMany(() => Price, (prices) => prices.product, {
-    lazy: true,
-  })
-  @JoinColumn()
+  @OneToMany(() => Price, (prices) => prices.product, { lazy: true })
   productPrices: Relation<Price>[];
 
   @ManyToMany(() => Category, (category) => category.products, {
@@ -74,31 +74,31 @@ export class Product {
   })
   categories: Relation<Category>[];
 
-  @OneToMany(() => Inventory, (inventory) => inventory.product, {
-    lazy: true,
-  })
-  @JoinColumn()
+  @OneToMany(
+    () => Inventory,
+    (inventory) => inventory.product,
+    { lazy: true },
+  )
   inventories: Relation<Inventory>[];
 
-  @OneToMany(() => ProductLink, (productLink) => productLink.product, {
-    lazy: true,
-  })
-  @JoinColumn()
+  @OneToMany(
+    () => ProductLink,
+    (productLink) => productLink.product,
+    { lazy: true },
+  )
   productLinks: Relation<ProductLink>[];
 
-  @OneToMany(() => ProductVariant, (ProductVariant) => ProductVariant.product, {
-    lazy: true,
-  })
-  @JoinColumn()
+  @OneToMany(
+    () => ProductVariant,
+    (pv) => pv.product,
+    { lazy: true },
+  )
   productVariants: Relation<ProductVariant>[];
 
   @OneToMany(
     () => CustomerOrderDetail,
-    (customerOrderDetail) => customerOrderDetail.product,
-    {
-      lazy: true,
-    },
+    (cod) => cod.product,
+    { lazy: true },
   )
-  @JoinColumn({ name: 'ProductID' })
   customerOrderDetails: Relation<CustomerOrderDetail>[];
 }

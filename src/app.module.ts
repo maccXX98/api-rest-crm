@@ -20,6 +20,8 @@ import { CitiesModule } from './cities/cities.module';
 import { CustomerOrdersModule } from './customer-orders/customer-orders.module';
 import { AuthModule } from './auth/auth.module';
 import { CustomerOrderDetailsModule } from './customer-order-details/customer-order-details.module';
+import { ImageProcessingModule } from './image-processing/image-processing.module';
+import { ProductImagesModule } from './product-images/product-images.module';
 import { AuthGuard } from './auth/guards/auth.guard';
 import { APP_GUARD } from '@nestjs/core/constants';
 import { ThrottlerModule } from '@nestjs/throttler';
@@ -55,6 +57,8 @@ import { ThrottlerModule } from '@nestjs/throttler';
     CustomerOrdersModule,
     AuthModule,
     CustomerOrderDetailsModule,
+    ImageProcessingModule,
+    ProductImagesModule,
   ],
   controllers: [AppController],
   providers: [

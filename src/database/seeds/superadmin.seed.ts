@@ -44,7 +44,15 @@ async function seedSuperadmin() {
       // Update existing user
       await client.query(
         `UPDATE "user" SET "FirstName" = $1, "LastName" = $2, "Phone" = $3, "Role" = $4, "Email" = $5, "Password" = $6 WHERE "Username" = $7`,
-        ['Super', 'Admin', '0000000000', Role.ADMIN, 'superadmin@crm.local', hashedPassword, 'superadmin'],
+        [
+          'Super',
+          'Admin',
+          '0000000000',
+          Role.ADMIN,
+          'superadmin@crm.local',
+          hashedPassword,
+          'superadmin',
+        ],
       );
       console.log('✅ Superadmin user updated');
     } else {
@@ -54,7 +62,16 @@ async function seedSuperadmin() {
       await client.query(
         `INSERT INTO "user" ("UserID", "FirstName", "LastName", "Phone", "Role", "Username", "Email", "Password")
          VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
-        [userId, 'Super', 'Admin', '0000000000', Role.ADMIN, 'superadmin', 'superadmin@crm.local', hashedPassword],
+        [
+          userId,
+          'Super',
+          'Admin',
+          '0000000000',
+          Role.ADMIN,
+          'superadmin',
+          'superadmin@crm.local',
+          hashedPassword,
+        ],
       );
       console.log('✅ Superadmin user created');
     }

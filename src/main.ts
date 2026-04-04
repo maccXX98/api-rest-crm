@@ -5,9 +5,7 @@ import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
-import {
-  AllExceptionsFilter,
-} from './common/filters/all-exceptions.filter';
+import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { ThrottlerExceptionFilter } from './common/filters/throttler-exception.filter';
 import { AppModule } from './app.module';
 import { config } from 'dotenv';

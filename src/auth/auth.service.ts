@@ -28,7 +28,11 @@ export class AuthService {
     if (!user || !(await bcrypt.compare(pass, user.Password))) {
       throw new UnauthorizedException();
     }
-    const payload = { sub: user.UserID, username: user.Username, role: user.Role };
+    const payload = {
+      sub: user.UserID,
+      username: user.Username,
+      role: user.Role,
+    };
     return {
       access_token: await this.jwtService.signAsync(payload, {
         expiresIn: '1h',
@@ -49,8 +53,12 @@ export class AuthService {
       const payload = await this.jwtService.verifyAsync(refreshToken, {
         secret: this.envConfig.jwtRefreshToken,
       });
-      
-      const newPayload = { sub: payload.sub, username: payload.username, role: payload.role };
+
+      const newPayload = {
+        sub: payload.sub,
+        username: payload.username,
+        role: payload.role,
+      };
       return {
         access_token: await this.jwtService.signAsync(newPayload, {
           expiresIn: '1h',

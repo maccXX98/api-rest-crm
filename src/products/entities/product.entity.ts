@@ -74,31 +74,17 @@ export class Product {
   })
   categories: Relation<Category>[];
 
-  @OneToMany(
-    () => Inventory,
-    (inventory) => inventory.product,
-    { lazy: true },
-  )
+  @OneToMany(() => Inventory, (inventory) => inventory.product, { lazy: true })
   inventories: Relation<Inventory>[];
 
-  @OneToMany(
-    () => ProductLink,
-    (productLink) => productLink.product,
-    { lazy: true },
-  )
+  @OneToMany(() => ProductLink, (productLink) => productLink.product, {
+    lazy: true,
+  })
   productLinks: Relation<ProductLink>[];
 
-  @OneToMany(
-    () => ProductVariant,
-    (pv) => pv.product,
-    { lazy: true },
-  )
+  @OneToMany(() => ProductVariant, (pv) => pv.product, { lazy: true })
   productVariants: Relation<ProductVariant>[];
 
-  @OneToMany(
-    () => CustomerOrderDetail,
-    (cod) => cod.product,
-    { lazy: true },
-  )
+  @OneToMany(() => CustomerOrderDetail, (cod) => cod.product, { lazy: true })
   customerOrderDetails: Relation<CustomerOrderDetail>[];
 }

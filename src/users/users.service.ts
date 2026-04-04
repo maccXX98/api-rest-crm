@@ -62,7 +62,17 @@ export class UsersService {
     return this.userRepository.findOne({
       where: [{ Username: login }, { Email: login }],
       withDeleted: false,
-      select: ['UserID', 'Username', 'Email', 'Password', 'FirstName', 'LastName', 'Phone', 'Photo', 'Role'],
+      select: [
+        'UserID',
+        'Username',
+        'Email',
+        'Password',
+        'FirstName',
+        'LastName',
+        'Phone',
+        'Photo',
+        'Role',
+      ],
     });
   }
 

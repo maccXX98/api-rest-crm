@@ -81,10 +81,13 @@ export class ProductVariantsService {
 
     await this.productVariantRepository.save(productVariant);
 
-    return this.productVariantRepository.findOne({
+    const updatedVariant = await this.productVariantRepository.findOne({
       where: { ProductVariantID: id },
       relations: ['product'],
     });
+    if (!updatedVariant)
+      throw new Error(`ProductVariant with ID ${id} not found`);
+    return updatedVariant;
   }
 
   async remove(id: number) {

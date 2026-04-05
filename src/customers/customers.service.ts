@@ -22,7 +22,11 @@ export class CustomersService {
   }
 
   async findOne(id: number): Promise<Customer> {
-    return this.customerRepository.findOne({ where: { CustomerID: id } });
+    const customer = await this.customerRepository.findOne({
+      where: { CustomerID: id },
+    });
+    if (!customer) throw new Error(`Customer with ID ${id} not found`);
+    return customer;
   }
 
   async update(
@@ -37,7 +41,11 @@ export class CustomersService {
     }
 
     await this.customerRepository.update(id, updateCustomerDto);
-    return this.customerRepository.findOne({ where: { CustomerID: id } });
+    const updatedCustomer = await this.customerRepository.findOne({
+      where: { CustomerID: id },
+    });
+    if (!updatedCustomer) throw new Error(`Customer with ID ${id} not found`);
+    return updatedCustomer;
   }
 
   async remove(id: number): Promise<void> {

@@ -80,10 +80,12 @@ export class ProductLinksService {
 
     await this.productLinkRepository.save(productLink);
 
-    return this.productLinkRepository.findOne({
+    const updatedLink = await this.productLinkRepository.findOne({
       where: { ProductLinkID: id },
       relations: ['product'],
     });
+    if (!updatedLink) throw new Error(`ProductLink with ID ${id} not found`);
+    return updatedLink;
   }
 
   async remove(id: number) {

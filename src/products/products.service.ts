@@ -50,7 +50,7 @@ export class ProductsService {
 
   async findAll(): Promise<Product[]> {
     return this.productRepository.find({
-      relations: ['distributor', 'categories', 'productImages'],
+      relations: ['distributor', 'categories'],
       withDeleted: false,
     });
   }
@@ -58,7 +58,7 @@ export class ProductsService {
   async findOne(id: number): Promise<Product> {
     const product = await this.productRepository.findOne({
       where: { ProductID: id },
-      relations: ['distributor', 'categories', 'productImages'],
+      relations: ['distributor', 'categories'],
     });
     if (!product) {
       throw new Error(`Product with ID ${id} not found`);
@@ -111,10 +111,14 @@ export class ProductsService {
 
     await this.productRepository.save(product);
 
-    return this.productRepository.findOne({
+    const updatedProduct = await this.productRepository.findOne({
       where: { ProductID: id },
-      relations: ['distributor', 'categories', 'productImages'],
+      relations: ['distributor', 'categories'],
     });
+    if (!updatedProduct) {
+      throw new Error(`Product with ID ${id} not found`);
+    }
+    return updatedProduct;
   }
 
   async remove(id: number): Promise<void> {

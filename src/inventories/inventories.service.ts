@@ -77,10 +77,12 @@ export class InventoriesService {
 
     await this.inventoryRepository.save(inventory);
 
-    return this.inventoryRepository.findOne({
+    const updatedInventory = await this.inventoryRepository.findOne({
       where: { InventoryID: id },
       relations: ['product'],
     });
+    if (!updatedInventory) throw new Error(`Inventory with ID ${id} not found`);
+    return updatedInventory;
   }
 
   async remove(id: number) {

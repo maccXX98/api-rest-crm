@@ -54,10 +54,12 @@ export class ProductOrdersService {
   }
 
   async findOne(id: number): Promise<ProductOrder> {
-    return this.productOrderRepository.findOne({
+    const order = await this.productOrderRepository.findOne({
       where: { ProductOrderID: id },
       relations: ['distributor', 'user'],
     });
+    if (!order) throw new Error(`ProductOrder with ID ${id} not found`);
+    return order;
   }
 
   async update(
@@ -101,10 +103,12 @@ export class ProductOrdersService {
       { ProductOrderID: id },
       updateProductOrderDto,
     );
-    return this.productOrderRepository.findOne({
+    const updatedOrder = await this.productOrderRepository.findOne({
       where: { ProductOrderID: id },
       relations: ['distributor', 'user'],
     });
+    if (!updatedOrder) throw new Error(`ProductOrder with ID ${id} not found`);
+    return updatedOrder;
   }
 
   async remove(id: number): Promise<void> {

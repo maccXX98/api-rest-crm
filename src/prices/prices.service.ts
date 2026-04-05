@@ -36,10 +36,14 @@ export class PricesService {
   }
 
   async findOne(id: number): Promise<Price> {
-    return this.priceRepository.findOne({
+    const price = await this.priceRepository.findOne({
       where: { PriceID: id },
       relations: ['product'],
     });
+    if (!price) {
+      throw new Error(`Price with ID ${id} not found`);
+    }
+    return price;
   }
 
   async update(id: number, updatePriceDto: UpdatePriceDto): Promise<Price> {
@@ -64,10 +68,14 @@ export class PricesService {
     }
 
     await this.priceRepository.update({ PriceID: id }, updatePriceDto);
-    return this.priceRepository.findOne({
+    const updatedPrice = await this.priceRepository.findOne({
       where: { PriceID: id },
       relations: ['product'],
     });
+    if (!updatedPrice) {
+      throw new Error(`Price with ID ${id} not found`);
+    }
+    return updatedPrice;
   }
 
   async remove(id: number): Promise<void> {

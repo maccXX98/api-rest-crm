@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MulterModule } from '@nestjs/platform-express';
 import { ProductsService } from './products.service';
@@ -26,7 +26,7 @@ import { ProductImagesModule } from '../product-images/product-images.module';
     TypeOrmModule.forFeature([Product]),
     DistributorsModule,
     CategoriesModule,
-    ProductImagesModule,
+    forwardRef(() => ProductImagesModule),
     ProductsService,
   ],
 })

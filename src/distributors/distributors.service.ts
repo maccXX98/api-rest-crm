@@ -25,7 +25,11 @@ export class DistributorsService {
   }
 
   async findOne(id: number): Promise<Distributor> {
-    return this.distributorRepository.findOne({ where: { DistributorID: id } });
+    const distributor = await this.distributorRepository.findOne({
+      where: { DistributorID: id },
+    });
+    if (!distributor) throw new Error(`Distributor with ID ${id} not found`);
+    return distributor;
   }
 
   async update(

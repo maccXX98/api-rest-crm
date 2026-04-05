@@ -23,10 +23,13 @@ export class DistributorRelationsService {
   }
 
   async findOne(id: number): Promise<DistributorRelation> {
-    return await this.distributorRelationRepository.findOne({
+    const relation = await this.distributorRelationRepository.findOne({
       where: { DistributorID: id },
       relations: ['distributor'],
     });
+    if (!relation)
+      throw new Error(`DistributorRelation with ID ${id} not found`);
+    return relation;
   }
 
   async updateDistributorRelations(distributorId: number) {

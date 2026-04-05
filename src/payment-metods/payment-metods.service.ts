@@ -26,9 +26,11 @@ export class PaymentMetodsService {
   }
 
   async findOne(id: number): Promise<PaymentMethod> {
-    return this.paymentMetodsRepository.findOne({
+    const method = await this.paymentMetodsRepository.findOne({
       where: { PaymentMethodID: id },
     });
+    if (!method) throw new Error(`PaymentMethod with ID ${id} not found`);
+    return method;
   }
 
   async update(
@@ -43,9 +45,12 @@ export class PaymentMetodsService {
     }
 
     await this.paymentMetodsRepository.update(id, updatePaymentMetodDto);
-    return this.paymentMetodsRepository.findOne({
+    const updatedMethod = await this.paymentMetodsRepository.findOne({
       where: { PaymentMethodID: id },
     });
+    if (!updatedMethod)
+      throw new Error(`PaymentMethod with ID ${id} not found`);
+    return updatedMethod;
   }
 
   async remove(id: number): Promise<void> {

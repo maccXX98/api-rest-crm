@@ -22,9 +22,11 @@ export class CitiesService {
   }
 
   async findOne(id: number): Promise<City> {
-    return this.citiesRepository.findOne({
+    const city = await this.citiesRepository.findOne({
       where: { CityID: id },
     });
+    if (!city) throw new Error(`City with ID ${id} not found`);
+    return city;
   }
 
   async update(id: number, updateCityDto: UpdateCityDto): Promise<City> {
@@ -36,9 +38,11 @@ export class CitiesService {
     }
 
     await this.citiesRepository.update(id, updateCityDto);
-    return this.citiesRepository.findOne({
+    const updatedCity = await this.citiesRepository.findOne({
       where: { CityID: id },
     });
+    if (!updatedCity) throw new Error(`City with ID ${id} not found`);
+    return updatedCity;
   }
 
   async remove(id: number): Promise<void> {

@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Inject } from '@nestjs/common';
 import { MessageLog } from './entities/message-log.entity';
-import { MessageDirection } from './entities/message-log.entity';
+import { MessageDirection } from './entities/message-direction.enum';
 import { RedisClientProvider } from './redis-client.provider';
 
 @Injectable()
@@ -44,6 +44,7 @@ export class MessageLogService {
       const existing = await this.messageLogRepository.findOne({
         where: { waMessageId },
       });
+      if (!existing) throw new Error(`Message log not found for ${waMessageId}`);
       return existing;
     }
 
@@ -60,7 +61,7 @@ export class MessageLogService {
 
     const saved = await this.messageLogRepository.save(log);
     this.logger.log(`Logged inbound message ${waMessageId} from ${phone}`);
-    return saved;
+    return saved as MessageLog;
   }
 
   async logOutbound(
@@ -72,10 +73,11 @@ export class MessageLogService {
       direction: MessageDirection.OUTBOUND,
       phone,
       messageType,
-      content,
+      content: content ?? undefined,
     });
 
-    return this.messageLogRepository.save(log);
+    const saved = await this.messageLogRepository.save(log);
+    return saved as MessageLog;
   }
 
   async findByPhone(phone: string, limit = 20): Promise<MessageLog[]> {

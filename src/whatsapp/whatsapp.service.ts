@@ -26,7 +26,7 @@ export class WhatsAppService {
     );
     const phoneId = this.configService.get<string>('WHATSAPP_PHONE_NUMBER_ID');
     this.apiUrl = `https://graph.facebook.com/${version}/${phoneId}/messages`;
-    this.accessToken = this.configService.get<string>('WHATSAPP_ACCESS_TOKEN');
+    this.accessToken = this.configService.get<string>('WHATSAPP_ACCESS_TOKEN') ?? '';
   }
 
   // ═══════════════════════════════════════════

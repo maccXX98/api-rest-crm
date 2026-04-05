@@ -25,7 +25,7 @@ export class MessageLog {
   messageType: string;
 
   @Column({ type: 'text', nullable: true })
-  content: string;
+  content: string | null;
 
   @Column({ nullable: true })
   waMessageId: string;

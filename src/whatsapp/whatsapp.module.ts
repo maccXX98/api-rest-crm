@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { BullModule } from '@nestjs/bullmq';
 import { HttpModule } from '@nestjs/axios';
 import { ConfigModule } from '@nestjs/config';
 import { WhatsAppController } from './whatsapp.controller';
@@ -8,7 +9,14 @@ import { WhatsAppWebhookHealthCheck } from './whatsapp-webhook-health.check';
 import { MessageLogModule } from '../message-log/message-log.module';
 
 @Module({
-  imports: [HttpModule, ConfigModule, MessageLogModule],
+  imports: [
+    HttpModule,
+    ConfigModule,
+    MessageLogModule,
+    BullModule.registerQueue({
+      name: 'whatsapp-inbound',
+    }),
+  ],
   controllers: [WhatsAppController],
   providers: [
     WhatsAppService,

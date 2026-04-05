@@ -6,7 +6,10 @@ export class InitDB1775415030471 implements MigrationInterface {
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(
             `ALTER TABLE "customer_order_detail" DROP CONSTRAINT "FK_2d4f1d84a1f7825c208aefca7ce"`,
-            await queryRunner.query(`ALTER TABLE "customer_order_detail" DROP CONSTRAINT "FK_5d49fc6e0d2f37c5ef96fe726d8"`);
+        );
+        await queryRunner.query(
+            `ALTER TABLE "customer_order_detail" DROP CONSTRAINT "FK_5d49fc6e0d2f37c5ef96fe726d8"`,
+        );
         await queryRunner.query(`CREATE TABLE "product_images" ("ProductImageID" SERIAL NOT NULL, "originalPath" character varying(500) NOT NULL, "whatsappPath" character varying(500) NOT NULL, "webPath" character varying(500) NOT NULL, "thumbPath" character varying(500) NOT NULL, "productId" integer, "productLinkId" integer, "jobId" integer, "originalSize" integer, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_0390ed82dbc871317729015f36d" PRIMARY KEY ("ProductImageID"))`);
         await queryRunner.query(`CREATE TYPE "public"."message_logs_direction_enum" AS ENUM('INBOUND', 'OUTBOUND')`);
         await queryRunner.query(`CREATE TABLE "message_logs" ("id" SERIAL NOT NULL, "direction" "public"."message_logs_direction_enum" NOT NULL, "phone" character varying(20) NOT NULL, "messageType" character varying(50) NOT NULL, "content" text, "waMessageId" character varying, "waMessageTimestamp" character varying, "rawPayload" jsonb, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_f0aae0d876a96fa1da0a1b97444" PRIMARY KEY ("id"))`);

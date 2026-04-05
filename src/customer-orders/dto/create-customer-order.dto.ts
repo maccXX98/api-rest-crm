@@ -1,4 +1,4 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsOptional } from 'class-validator';
 
 export class CreateCustomerOrderDto {
   @IsNotEmpty()
@@ -7,6 +7,6 @@ export class CreateCustomerOrderDto {
   @IsNotEmpty()
   CityID: number;
 
-  @IsNotEmpty()
-  PaymentMethodID: number;
+  @IsOptional()
+  PaymentMethodID?: number | null;
 }

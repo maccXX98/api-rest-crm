@@ -37,21 +37,24 @@ export class CustomerOrdersService {
       throw new Error('Ciudad no encontrada');
     }
 
-    const paymentMethod = await this.paymentMethodRepository.findOne({
-      where: { PaymentMethodID },
-    });
-    if (!paymentMethod) {
-      throw new Error('Método de pago no encontrado');
+    // PaymentMethodID is optional (null for cash-on-delivery orders)
+    let paymentMethod: PaymentMethod | null = null;
+    if (PaymentMethodID != null) {
+      paymentMethod = await this.paymentMethodRepository.findOne({
+        where: { PaymentMethodID },
+      });
+      if (!paymentMethod) {
+        throw new Error('Método de pago no encontrado');
+      }
     }
 
     const customerOrder = this.customerOrderRepository.create({
-      ...createCustomerOrderDto,
-      customer,
-      city,
-      paymentMethod,
+      CustomerID,
+      CityID,
+      paymentMethod: paymentMethod ?? undefined,
     });
 
-    return this.customerOrderRepository.save(customerOrder);
+    return this.customerOrderRepository.save(customerOrder) as Promise<CustomerOrder>;
   }
 
   async findAll(): Promise<CustomerOrder[]> {

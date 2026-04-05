@@ -39,11 +39,12 @@ export class WhatsAppWebhookHealthCheck implements OnApplicationBootstrap {
             'Please subscribe to webhooks in Meta App Dashboard.',
         );
       }
-    } catch (error) {
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: unknown } };
       this.logger.error(
         'Failed to verify WhatsApp webhook subscription. ' +
           'Check WHATSAPP_ACCESS_TOKEN and WHATSAPP_WABA_ID.',
-        error?.response?.data ?? error,
+        err?.response?.data ?? error,
       );
     }
   }

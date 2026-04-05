@@ -25,8 +25,8 @@ export class CustomerOrder {
   @Column()
   CityID: number;
 
-  @Column()
-  PaymentMethodID: number;
+  @Column({ nullable: true })
+  PaymentMethodID: number | null;
 
   @DeleteDateColumn()
   deletedAt?: Date;
@@ -41,10 +41,10 @@ export class CustomerOrder {
   @ManyToOne(
     () => PaymentMethod,
     (PaymentMethod) => PaymentMethod.customerOrders,
-    { lazy: true },
+    { lazy: true, nullable: true },
   )
   @JoinColumn({ name: 'PaymentMethodID' })
-  paymentMethod: Relation<PaymentMethod>;
+  paymentMethod: Relation<PaymentMethod> | null;
 
   @ManyToOne(() => Customer, (customer) => customer.customerOrders, {
     lazy: true,

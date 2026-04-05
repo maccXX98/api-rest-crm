@@ -4,7 +4,7 @@
 # compiled output
 /dist
 /node_modules
-pnpm-lock.yaml
+bun.lock
 
 # Logs
 logs
@@ -38,4 +38,4 @@ lerna-debug.log*
 !.vscode/launch.json
 !.vscode/extensions.json
 client_secret_297916934080-af8mo9db30d7m8a8mm6igmubhn6cn5tb.apps.googleusercontent.com.json
-pnpm-lock.yaml
+tsconfig.build.tsbuildinfo

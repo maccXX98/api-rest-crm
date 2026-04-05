@@ -3,7 +3,11 @@ import {
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
+  ManyToOne,
+  JoinColumn,
+  Relation,
 } from 'typeorm';
+import { Product } from '../../products/entities/product.entity';
 
 @Entity('product_images')
 export class ProductImage {
@@ -36,4 +40,12 @@ export class ProductImage {
 
   @CreateDateColumn()
   createdAt: Date;
+
+  // Relation to Product (optional, for eager loading)
+  @ManyToOne(() => Product, (product) => product.productImages, {
+    nullable: true,
+    lazy: true,
+  })
+  @JoinColumn({ name: 'productId' })
+  product?: Relation<Product>;
 }

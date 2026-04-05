@@ -1,25 +1,26 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { In, Repository } from 'typeorm';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import {
-  PRODUCT_REPOSITORY,
-  DISTRIBUTOR_REPOSITORY,
-  CATEGORY_REPOSITORY,
-} from '../constants';
-import { In, Repository } from 'typeorm';
 import { Product } from './entities/product.entity';
 import { Distributor } from '../distributors/entities/distributor.entity';
 import { Category } from '../categories/entities/category.entity';
+import { ProductImagesService } from '../product-images/product-images.service';
+import { ProductImage } from '../product-images/entities/product-image.entity';
 
 @Injectable()
 export class ProductsService {
+  private readonly logger = new Logger(ProductsService.name);
+
   constructor(
-    @Inject(PRODUCT_REPOSITORY)
+    @InjectRepository(Product)
     private productRepository: Repository<Product>,
-    @Inject(DISTRIBUTOR_REPOSITORY)
+    @InjectRepository(Distributor)
     private distributorRepository: Repository<Distributor>,
-    @Inject(CATEGORY_REPOSITORY)
+    @InjectRepository(Category)
     private categoryRepository: Repository<Category>,
+    private readonly productImagesService: ProductImagesService,
   ) {}
 
   async create(createProductDto: CreateProductDto): Promise<Product> {
@@ -49,7 +50,7 @@ export class ProductsService {
 
   async findAll(): Promise<Product[]> {
     return this.productRepository.find({
-      relations: ['distributor', 'categories'],
+      relations: ['distributor', 'categories', 'productImages'],
       withDeleted: false,
     });
   }
@@ -57,7 +58,7 @@ export class ProductsService {
   async findOne(id: number): Promise<Product> {
     const product = await this.productRepository.findOne({
       where: { ProductID: id },
-      relations: ['distributor', 'categories'],
+      relations: ['distributor', 'categories', 'productImages'],
     });
     if (!product) {
       throw new Error(`Product with ID ${id} not found`);
@@ -112,7 +113,7 @@ export class ProductsService {
 
     return this.productRepository.findOne({
       where: { ProductID: id },
-      relations: ['distributor', 'categories'],
+      relations: ['distributor', 'categories', 'productImages'],
     });
   }
 
@@ -123,5 +124,46 @@ export class ProductsService {
     if (!deleteResult.affected) {
       throw new Error(`Product with ID ${id} not found`);
     }
+  }
+
+  // =========================================
+  // Image Processing Methods
+  // =========================================
+
+  async addProductImage(
+    productId: number,
+    fileBuffer: Buffer,
+    originalFilename: string,
+    mimeType: string,
+  ): Promise<ProductImage> {
+    const product = await this.findOne(productId);
+    if (!product) {
+      throw new Error(`Product with ID ${productId} not found`);
+    }
+
+    this.logger.log(
+      `Adding image to product ${productId}: ${originalFilename}`,
+    );
+
+    return this.productImagesService.processAndCreateProductImage(
+      fileBuffer,
+      originalFilename,
+      mimeType,
+      { productId },
+    );
+  }
+
+  async getProductImages(
+    productId: number,
+  ): Promise<{ primary: ProductImage | null; all: ProductImage[] }> {
+    return this.productImagesService.getProductImageUrls(productId);
+  }
+
+  async deleteProductImage(productId: number, imageId: number): Promise<void> {
+    const image = await this.productImagesService.findById(imageId);
+    if (!image || image.productId !== productId) {
+      throw new Error(`Image ${imageId} not found for product ${productId}`);
+    }
+    await this.productImagesService.delete(imageId);
   }
 }

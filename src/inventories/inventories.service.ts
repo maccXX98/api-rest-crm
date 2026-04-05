@@ -1,17 +1,17 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateInventoryDto } from './dto/create-inventory.dto';
 import { UpdateInventoryDto } from './dto/update-inventory.dto';
-import { INVENTORY_REPOSITORY, PRODUCT_REPOSITORY } from '../constants';
-import { Repository } from 'typeorm';
 import { Product } from '../products/entities/product.entity';
 import { Inventory } from './entities/inventory.entity';
 
 @Injectable()
 export class InventoriesService {
   constructor(
-    @Inject(PRODUCT_REPOSITORY)
+    @InjectRepository(Product)
     private productRepository: Repository<Product>,
-    @Inject(INVENTORY_REPOSITORY)
+    @InjectRepository(Inventory)
     private inventoryRepository: Repository<Inventory>,
   ) {}
 

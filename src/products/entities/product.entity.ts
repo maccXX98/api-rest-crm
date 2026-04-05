@@ -6,6 +6,7 @@ import { Inventory } from '../../inventories/entities/inventory.entity';
 import { ProductLink } from '../../product-links/entities/product-link.entity';
 import { ProductVariant } from '../../product-variants/entities/product-variant.entity';
 import { CustomerOrderDetail } from '../../customer-order-details/entities/customer-order-detail.entity';
+import { ProductImage } from '../../product-images/entities/product-image.entity';
 import { IsNotEmpty } from 'class-validator';
 import {
   Entity,
@@ -87,4 +88,9 @@ export class Product {
 
   @OneToMany(() => CustomerOrderDetail, (cod) => cod.product, { lazy: true })
   customerOrderDetails: Relation<CustomerOrderDetail>[];
+
+  @OneToMany(() => ProductImage, (productImage) => productImage.product, {
+    lazy: true,
+  })
+  productImages: Relation<ProductImage>[];
 }

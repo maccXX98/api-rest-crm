@@ -1,14 +1,22 @@
 import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { DistributorRelationsService } from './distributor-relations.service';
 import { DistributorRelationsController } from './distributor-relations.controller';
-import { distributorRelationProviders } from './distributor-relation.providers';
+import { DistributorRelation } from './entities/distributor-relation.entity';
 import { ProductOrdersModule } from '../product-orders/product-orders.module';
 import { ProductOrderDetailsModule } from '../product-order-details/product-order-details.module';
 
 @Module({
-  imports: [ProductOrdersModule, ProductOrderDetailsModule],
+  imports: [
+    TypeOrmModule.forFeature([DistributorRelation]),
+    ProductOrdersModule,
+    ProductOrderDetailsModule,
+  ],
   controllers: [DistributorRelationsController],
-  providers: [...distributorRelationProviders, DistributorRelationsService],
-  exports: [...distributorRelationProviders],
+  providers: [DistributorRelationsService],
+  exports: [
+    TypeOrmModule.forFeature([DistributorRelation]),
+    DistributorRelationsService,
+  ],
 })
 export class DistributorRelationsModule {}

@@ -1,28 +1,23 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateCustomerOrderDto } from './dto/create-customer-order.dto';
 import { UpdateCustomerOrderDto } from './dto/update-customer-order.dto';
-import { Repository } from 'typeorm';
-import {
-  CITY_REPOSITORY,
-  CUSTOMER_ORDER_REPOSITORY,
-  CUSTOMER_REPOSITORY,
-  PAYMENT_METHOD_REPOSITORY,
-} from '../constants';
 import { CustomerOrder } from './entities/customer-order.entity';
 import { Customer } from '../customers/entities/customer.entity';
 import { City } from '../cities/entities/city.entity';
-import { PaymentMethod } from 'src/payment-metods/entities/payment-metod.entity';
+import { PaymentMethod } from '../payment-metods/entities/payment-metod.entity';
 
 @Injectable()
 export class CustomerOrdersService {
   constructor(
-    @Inject(CUSTOMER_ORDER_REPOSITORY)
+    @InjectRepository(CustomerOrder)
     private customerOrderRepository: Repository<CustomerOrder>,
-    @Inject(CUSTOMER_REPOSITORY)
+    @InjectRepository(Customer)
     private customerRepository: Repository<Customer>,
-    @Inject(CITY_REPOSITORY)
+    @InjectRepository(City)
     private cityRepository: Repository<City>,
-    @Inject(PAYMENT_METHOD_REPOSITORY)
+    @InjectRepository(PaymentMethod)
     private paymentMethodRepository: Repository<PaymentMethod>,
   ) {}
   async create(

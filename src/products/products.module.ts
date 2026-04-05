@@ -1,14 +1,33 @@
 import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { MulterModule } from '@nestjs/platform-express';
 import { ProductsService } from './products.service';
 import { ProductsController } from './products.controller';
-import { productProviders } from './product.providers';
+import { Product } from './entities/product.entity';
 import { DistributorsModule } from '../distributors/distributors.module';
 import { CategoriesModule } from '../categories/categories.module';
+import { ProductImagesModule } from '../product-images/product-images.module';
 
 @Module({
-  imports: [DistributorsModule, CategoriesModule],
+  imports: [
+    TypeOrmModule.forFeature([Product]),
+    DistributorsModule,
+    CategoriesModule,
+    ProductImagesModule,
+    MulterModule.register({
+      limits: {
+        fileSize: 20 * 1024 * 1024, // 20MB
+      },
+    }),
+  ],
   controllers: [ProductsController],
-  providers: [...productProviders, ProductsService],
-  exports: [...productProviders],
+  providers: [ProductsService],
+  exports: [
+    TypeOrmModule.forFeature([Product]),
+    DistributorsModule,
+    CategoriesModule,
+    ProductImagesModule,
+    ProductsService,
+  ],
 })
 export class ProductsModule {}

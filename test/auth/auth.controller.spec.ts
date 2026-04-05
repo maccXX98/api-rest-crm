@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from '../../src/auth/auth.controller';
 import { AuthService } from '../../src/auth/auth.service';
 import { LoginDto } from '../../src/auth/dto/login.dto';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -15,6 +16,11 @@ describe('AuthController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AuthController],
+      imports: [
+        ThrottlerModule.forRoot({
+          throttlers: [{ ttl: 60, limit: 10 }],
+        }),
+      ],
       providers: [
         {
           provide: AuthService,
@@ -32,7 +38,7 @@ describe('AuthController', () => {
   });
 
   describe('login', () => {
-    fit('should call validateUser with correct credentials', async () => {
+    it('should call validateUser with correct credentials', async () => {
       // Arrange
       const loginDto: LoginDto = { login: 'testuser', password: 'password123' };
       const expectedResult = {
@@ -54,9 +60,9 @@ describe('AuthController', () => {
   });
 
   describe('refreshToken', () => {
-    it('should call validateRefreshToken with user from request', async () => {
+    it('should call validateRefreshToken with refresh token from body', async () => {
       // Arrange
-      const req = { user: { userId: 1, username: 'testuser' } };
+      const refreshToken = 'valid-refresh-token';
       const expectedResult = {
         access_token: 'new-token',
         refresh_token: 'new-refresh-token',
@@ -64,10 +70,12 @@ describe('AuthController', () => {
       mockAuthService.validateRefreshToken.mockResolvedValue(expectedResult);
 
       // Act
-      const result = await controller.refreshToken(req);
+      const result = await controller.refreshToken(refreshToken);
 
       // Assert
-      expect(authService.validateRefreshToken).toHaveBeenCalledWith(req.user);
+      expect(authService.validateRefreshToken).toHaveBeenCalledWith(
+        refreshToken,
+      );
       expect(result).toEqual(expectedResult);
     });
   });

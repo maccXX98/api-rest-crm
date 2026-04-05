@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { BullModule } from '@nestjs/bullmq';
 import { MulterModule } from '@nestjs/platform-express';
 import { ImageProcessingService } from './image-processing.service';
@@ -27,7 +27,7 @@ import { ProductImagesModule } from '../product-images/product-images.module';
         fileSize: 20 * 1024 * 1024, // 20MB
       },
     }),
-    ProductImagesModule,
+    forwardRef(() => ProductImagesModule),
   ],
   controllers: [ImageProcessingController],
   providers: [ImageProcessingService, ImageQueueService, ImageProcessor],

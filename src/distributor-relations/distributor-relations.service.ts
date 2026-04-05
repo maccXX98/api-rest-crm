@@ -1,22 +1,18 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { DistributorRelation } from './entities/distributor-relation.entity';
 import { ProductOrder } from '../product-orders/entities/product-order.entity';
 import { ProductOrderDetail } from '../product-order-details/entities/product-order-detail.entity';
-import {
-  DISTRIBUTOR_RELATION_REPOSITORY,
-  PRODUCT_ORDER_DETAIL_REPOSITORY,
-  PRODUCT_ORDER_REPOSITORY,
-} from '../constants';
 
 @Injectable()
 export class DistributorRelationsService {
   constructor(
-    @Inject(PRODUCT_ORDER_REPOSITORY)
+    @InjectRepository(ProductOrder)
     private productOrderRepository: Repository<ProductOrder>,
-    @Inject(PRODUCT_ORDER_DETAIL_REPOSITORY)
+    @InjectRepository(ProductOrderDetail)
     private productOrderDetailRepository: Repository<ProductOrderDetail>,
-    @Inject(DISTRIBUTOR_RELATION_REPOSITORY)
+    @InjectRepository(DistributorRelation)
     private distributorRelationRepository: Repository<DistributorRelation>,
   ) {}
 

@@ -1,17 +1,17 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateProductLinkDto } from './dto/create-product-link.dto';
 import { UpdateProductLinkDto } from './dto/update-product-link.dto';
-import { PRODUCT_LINK_REPOSITORY, PRODUCT_REPOSITORY } from '../constants';
-import { Repository } from 'typeorm';
 import { Product } from '../products/entities/product.entity';
 import { ProductLink } from './entities/product-link.entity';
 
 @Injectable()
 export class ProductLinksService {
   constructor(
-    @Inject(PRODUCT_REPOSITORY)
+    @InjectRepository(Product)
     private productRepository: Repository<Product>,
-    @Inject(PRODUCT_LINK_REPOSITORY)
+    @InjectRepository(ProductLink)
     private productLinkRepository: Repository<ProductLink>,
   ) {}
 

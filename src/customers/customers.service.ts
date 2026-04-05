@@ -1,14 +1,14 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
-import { CUSTOMER_REPOSITORY } from '../constants';
-import { Repository } from 'typeorm';
 import { Customer } from './entities/customer.entity';
 
 @Injectable()
 export class CustomersService {
   constructor(
-    @Inject(CUSTOMER_REPOSITORY)
+    @InjectRepository(Customer)
     private customerRepository: Repository<Customer>,
   ) {}
 

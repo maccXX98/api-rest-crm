@@ -4,6 +4,7 @@ import { UsersService } from '../../src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
+import { EnvConfig } from '../../src/config/env.validation';
 
 jest.mock('bcrypt');
 
@@ -18,6 +19,12 @@ describe('AuthService', () => {
 
   const mockJwtService = {
     signAsync: jest.fn(),
+    verifyAsync: jest.fn(),
+  };
+
+  const mockEnvConfig = {
+    jwtSecretToken: 'test-secret-token',
+    jwtRefreshToken: 'test-refresh-token',
   };
 
   beforeEach(async () => {
@@ -28,6 +35,7 @@ describe('AuthService', () => {
         AuthService,
         { provide: UsersService, useValue: mockUsersService },
         { provide: JwtService, useValue: mockJwtService },
+        { provide: EnvConfig, useValue: mockEnvConfig },
       ],
     }).compile();
 
@@ -113,11 +121,13 @@ describe('AuthService', () => {
   describe('validateRefreshToken', () => {
     it('should return new tokens when refresh token is valid', async () => {
       // Arrange
-      const mockUser = {
-        UserID: 1,
-        Username: 'testuser',
+      const mockPayload = {
+        sub: 1,
+        username: 'testuser',
+        role: 'admin',
       };
 
+      mockJwtService.verifyAsync.mockResolvedValue(mockPayload);
       mockJwtService.signAsync.mockImplementation((payload, options) => {
         if (options.expiresIn === '1h') {
           return Promise.resolve('new-access-token');
@@ -127,9 +137,15 @@ describe('AuthService', () => {
       });
 
       // Act
-      const result = await service.validateRefreshToken(mockUser as any);
+      const result = await service.validateRefreshToken('valid-refresh-token');
 
       // Assert
+      expect(jwtService.verifyAsync).toHaveBeenCalledWith(
+        'valid-refresh-token',
+        {
+          secret: 'test-refresh-token',
+        },
+      );
       expect(jwtService.signAsync).toHaveBeenCalledTimes(2);
       expect(result).toEqual({
         access_token: 'new-access-token',

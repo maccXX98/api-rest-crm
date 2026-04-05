@@ -1,14 +1,14 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreatePaymentMetodDto } from './dto/create-payment-metod.dto';
 import { UpdatePaymentMetodDto } from './dto/update-payment-metod.dto';
-import { PAYMENT_METHOD_REPOSITORY } from '../constants';
-import { Repository } from 'typeorm';
 import { PaymentMethod } from './entities/payment-metod.entity';
 
 @Injectable()
 export class PaymentMetodsService {
   constructor(
-    @Inject(PAYMENT_METHOD_REPOSITORY)
+    @InjectRepository(PaymentMethod)
     private paymentMetodsRepository: Repository<PaymentMethod>,
   ) {}
 

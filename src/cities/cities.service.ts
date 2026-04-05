@@ -1,14 +1,14 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateCityDto } from './dto/create-city.dto';
 import { UpdateCityDto } from './dto/update-city.dto';
-import { CITY_REPOSITORY } from '../constants';
-import { Repository } from 'typeorm';
 import { City } from './entities/city.entity';
 
 @Injectable()
 export class CitiesService {
   constructor(
-    @Inject(CITY_REPOSITORY)
+    @InjectRepository(City)
     private citiesRepository: Repository<City>,
   ) {}
 

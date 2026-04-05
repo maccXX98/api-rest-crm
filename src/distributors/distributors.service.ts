@@ -1,14 +1,14 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateDistributorDto } from './dto/create-distributor.dto';
 import { UpdateDistributorDto } from './dto/update-distributor.dto';
-import { DISTRIBUTOR_REPOSITORY } from '../constants';
-import { Repository } from 'typeorm';
 import { Distributor } from './entities/distributor.entity';
 
 @Injectable()
 export class DistributorsService {
   constructor(
-    @Inject(DISTRIBUTOR_REPOSITORY)
+    @InjectRepository(Distributor)
     private distributorRepository: Repository<Distributor>,
   ) {}
 

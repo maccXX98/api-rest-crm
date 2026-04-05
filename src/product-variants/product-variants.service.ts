@@ -1,17 +1,17 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateProductVariantDto } from './dto/create-product-variant.dto';
 import { UpdateProductVariantDto } from './dto/update-product-variant.dto';
-import { PRODUCT_VARIANT_REPOSITORY, PRODUCT_REPOSITORY } from '../constants';
-import { Repository } from 'typeorm';
 import { Product } from '../products/entities/product.entity';
 import { ProductVariant } from './entities/product-variant.entity';
 
 @Injectable()
 export class ProductVariantsService {
   constructor(
-    @Inject(PRODUCT_REPOSITORY)
+    @InjectRepository(Product)
     private productRepository: Repository<Product>,
-    @Inject(PRODUCT_VARIANT_REPOSITORY)
+    @InjectRepository(ProductVariant)
     private productVariantRepository: Repository<ProductVariant>,
   ) {}
 

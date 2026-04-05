@@ -1,17 +1,17 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreatePriceDto } from './dto/create-price.dto';
 import { UpdatePriceDto } from './dto/update-price.dto';
-import { PRICE_REPOSITORY, PRODUCT_REPOSITORY } from '../constants';
-import { Repository } from 'typeorm';
 import { Price } from './entities/price.entity';
 import { Product } from '../products/entities/product.entity';
 
 @Injectable()
 export class PricesService {
   constructor(
-    @Inject(PRICE_REPOSITORY)
+    @InjectRepository(Price)
     private priceRepository: Repository<Price>,
-    @Inject(PRODUCT_REPOSITORY)
+    @InjectRepository(Product)
     private productRepository: Repository<Product>,
   ) {}
 

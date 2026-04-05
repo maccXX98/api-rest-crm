@@ -1,12 +1,8 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateCustomerOrderDetailDto } from './dto/create-customer-order-detail.dto';
 import { UpdateCustomerOrderDetailDto } from './dto/update-customer-order-detail.dto';
-import {
-  CUSTOMER_ORDER_DETAIL_REPOSITORY,
-  CUSTOMER_ORDER_REPOSITORY,
-  PRODUCT_REPOSITORY,
-} from '../constants';
-import { Repository } from 'typeorm';
 import { CustomerOrderDetail } from './entities/customer-order-detail.entity';
 import { CustomerOrder } from '../customer-orders/entities/customer-order.entity';
 import { Product } from '../products/entities/product.entity';
@@ -14,11 +10,11 @@ import { Product } from '../products/entities/product.entity';
 @Injectable()
 export class CustomerOrderDetailsService {
   constructor(
-    @Inject(CUSTOMER_ORDER_DETAIL_REPOSITORY)
+    @InjectRepository(CustomerOrderDetail)
     private customerOrderDetailRepository: Repository<CustomerOrderDetail>,
-    @Inject(CUSTOMER_ORDER_REPOSITORY)
+    @InjectRepository(CustomerOrder)
     private customerOrderRepository: Repository<CustomerOrder>,
-    @Inject(PRODUCT_REPOSITORY)
+    @InjectRepository(Product)
     private productRepository: Repository<Product>,
   ) {}
 

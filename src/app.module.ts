@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { BullModule } from '@nestjs/bullmq';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -22,6 +23,9 @@ import { AuthModule } from './auth/auth.module';
 import { CustomerOrderDetailsModule } from './customer-order-details/customer-order-details.module';
 import { ImageProcessingModule } from './image-processing/image-processing.module';
 import { ProductImagesModule } from './product-images/product-images.module';
+import { WhatsAppModule } from './whatsapp/whatsapp.module';
+import { ChatbotModule } from './chatbot/chatbot.module';
+import { MessageLogModule } from './message-log/message-log.module';
 import { AuthGuard } from './auth/guards/auth.guard';
 import { APP_GUARD } from '@nestjs/core/constants';
 import { ThrottlerModule } from '@nestjs/throttler';
@@ -39,6 +43,12 @@ import { ThrottlerModule } from '@nestjs/throttler';
         limit: 10,
       },
     ]),
+    BullModule.forRoot({
+      connection: {
+        host: process.env.REDIS_HOST || 'localhost',
+        port: Number(process.env.REDIS_PORT) || 6379,
+      },
+    }),
     ProductsModule,
     DistributorsModule,
     DatabaseModule,
@@ -59,6 +69,9 @@ import { ThrottlerModule } from '@nestjs/throttler';
     CustomerOrderDetailsModule,
     ImageProcessingModule,
     ProductImagesModule,
+    WhatsAppModule,
+    ChatbotModule,
+    MessageLogModule,
   ],
   controllers: [AppController],
   providers: [

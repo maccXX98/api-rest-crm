@@ -51,4 +51,19 @@ export class CitiesService {
       throw new Error(`City with ID ${id} not found`);
     }
   }
+
+  async findByKeywords(words: string[]): Promise<City | null> {
+    if (!words.length) return null;
+    const cities = await this.citiesRepository.find();
+    for (const city of cities) {
+      if (!city.variations) continue;
+      const variations = city.variations
+        .split(',')
+        .map((v) => v.trim().toLowerCase());
+      if (words.some((word) => variations.includes(word))) {
+        return city;
+      }
+    }
+    return null;
+  }
 }

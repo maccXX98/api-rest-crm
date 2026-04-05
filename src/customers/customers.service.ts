@@ -54,4 +54,16 @@ export class CustomersService {
       throw new Error(`Customer with ID ${id} not found`);
     }
   }
+
+  async getOrCreateByPhone(phone: string): Promise<Customer> {
+    let customer = await this.customerRepository.findOne({ where: { phone } });
+    if (!customer) {
+      customer = this.customerRepository.create({
+        phone,
+        name: 'Cliente WhatsApp',
+      });
+      customer = await this.customerRepository.save(customer);
+    }
+    return customer;
+  }
 }

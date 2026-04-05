@@ -98,4 +98,11 @@ export class ProductLinksService {
 
     return this.productLinkRepository.softDelete(id);
   }
+
+  async findByUrl(url: string): Promise<ProductLink | null> {
+    return this.productLinkRepository
+      .createQueryBuilder('pl')
+      .where('pl.link = :url', { url })
+      .getOne();
+  }
 }

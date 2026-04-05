@@ -22,9 +22,11 @@
     "migration:generate": "bun run typeorm migration:generate",
     "migration:run": "bun run typeorm migration:run",
     "migration:revert": "bun run typeorm migration:revert",
-    "seed:superadmin": "bun src/database/seeds/superadmin.seed.ts"
+    "seed:superadmin": "bun src/database/seeds/superadmin.seed.ts",
+    "seed:chatbot": "bun src/database/seeds/chatbot.seed.ts"
   },
   "dependencies": {
+    "@nestjs/axios": "^4.0.1",
     "@nestjs/bullmq": "^11.0.4",
     "@nestjs/common": "^11.1.17",
     "@nestjs/config": "^4.0.3",
@@ -40,6 +42,7 @@
     "@types/passport-jwt": "^4.0.1",
     "@types/pg": "^8.20.0",
     "@types/uuid": "^11.0.0",
+    "axios": "^1.14.0",
     "bcrypt": "^6.0.0",
     "bullmq": "^5.73.0",
     "class-transformer": "^0.5.1",

@@ -130,6 +130,12 @@ export class ProductsService {
     }
   }
 
+  async findById(id: number): Promise<Product | null> {
+    return this.productRepository.findOne({
+      where: { ProductID: id },
+    });
+  }
+
   // =========================================
   // Image Processing Methods
   // =========================================

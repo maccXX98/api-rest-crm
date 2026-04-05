@@ -59,4 +59,19 @@ export class PaymentMetodsService {
       throw new Error(`PaymentMetod with ID ${id} not found`);
     }
   }
+
+  async findByKeywords(words: string[]): Promise<PaymentMethod | null> {
+    if (!words.length) return null;
+    const methods = await this.paymentMetodsRepository.find();
+    for (const method of methods) {
+      if (!method.variations) continue;
+      const variations = method.variations
+        .split(',')
+        .map((v) => v.trim().toLowerCase());
+      if (words.some((word) => variations.includes(word))) {
+        return method;
+      }
+    }
+    return null;
+  }
 }

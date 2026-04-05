@@ -16,6 +16,12 @@ export class City {
   @Column({ length: 150 })
   city: string;
 
+  @Column({ type: 'text', nullable: true })
+  variations: string;
+
+  @Column({ default: false })
+  cashOnDelivery: boolean;
+
   @Column()
   template: string;
 

@@ -16,6 +16,9 @@ export class PaymentMethod {
   @Column({ length: 150 })
   method: string;
 
+  @Column({ type: 'text', nullable: true })
+  variations: string;
+
   @Column()
   template: string;
 

@@ -16,6 +16,7 @@ export class City {
   @Column({ length: 150 })
   city: string;
 
+  // @deprecated: Use city_variations table instead
   @Column({ type: 'text', nullable: true })
   variations: string;
 
@@ -36,4 +37,7 @@ export class City {
 
   @OneToMany(() => CustomerOrder, (customerOrder) => customerOrder.city)
   customerOrders: CustomerOrder[];
+
+  @OneToMany('CityVariation', 'city')
+  variationsRelation: any[];
 }

@@ -77,19 +77,27 @@ export class ChatbotService {
     if (!text) return;
 
     const url = this.extractUrl(text);
-    if (!url) return; // No URL in message, ignore
-
-    const product = await this.productLinksService.findByUrl(url);
-    if (!product) {
-      this.logger.debug(`Product not found for URL: ${url}`);
+    if (!url) {
+      this.logger.debug(`[handleIdle] No URL found in text: "${text}"`);
       return;
     }
 
-    // Load the full product to get image and template
-    const fullProduct = await this.productsService.findById(
-      product.ProductLinkID,
-    );
-    if (!fullProduct) return;
+    this.logger.log(`[handleIdle] Looking for product with URL: ${url}`);
+
+    const result = await this.productLinksService.findByUrl(url);
+    if (!result) {
+      this.logger.debug(`[handleIdle] Product not found for URL: ${url}`);
+      return;
+    }
+
+    const { product: fullProduct } = result;
+
+    this.logger.log(`[handleIdle] Found product: ${fullProduct?.Name}, Image: ${fullProduct?.Image?.substring(0, 30)}...`);
+
+    if (!fullProduct?.Image) {
+      this.logger.error(`[handleIdle] Product ${fullProduct?.ProductID} has no Image!`);
+      return;
+    }
 
     // Send product info
     await this.whatsappService.sendImage(
@@ -128,8 +136,13 @@ export class ChatbotService {
     const text = extractText(message);
     if (!text) return;
 
+    this.logger.log(`[handleCityResponse] Received city response: "${text}"`);
+
     const words = normalizeAndSplit(text);
+    this.logger.log(`[handleCityResponse] Normalized words: ${JSON.stringify(words)}`);
+
     const city = await this.citiesService.findByKeywords(words);
+    this.logger.log(`[handleCityResponse] Found city: ${city?.city ?? 'NOT FOUND'}`);
 
     if (!city) {
       await this.whatsappService.sendText(
@@ -138,6 +151,8 @@ export class ChatbotService {
       );
       return;
     }
+
+    this.logger.log(`[handleCityResponse] City cashOnDelivery: ${city.cashOnDelivery}`);
 
     await this.whatsappService.sendImage(phone, city.image, city.template);
 

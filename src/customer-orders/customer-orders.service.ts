@@ -54,7 +54,9 @@ export class CustomerOrdersService {
       paymentMethod: paymentMethod ?? undefined,
     });
 
-    return this.customerOrderRepository.save(customerOrder) as Promise<CustomerOrder>;
+    return this.customerOrderRepository.save(
+      customerOrder,
+    ) as Promise<CustomerOrder>;
   }
 
   async findAll(): Promise<CustomerOrder[]> {

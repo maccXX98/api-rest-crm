@@ -13,6 +13,7 @@ export class WhatsAppService {
   private readonly logger = new Logger(WhatsAppService.name);
   private readonly apiUrl: string;
   private readonly accessToken: string;
+  private readonly dryRun: boolean;
 
   constructor(
     private readonly httpService: HttpService,
@@ -26,7 +27,16 @@ export class WhatsAppService {
     );
     const phoneId = this.configService.get<string>('WHATSAPP_PHONE_NUMBER_ID');
     this.apiUrl = `https://graph.facebook.com/${version}/${phoneId}/messages`;
-    this.accessToken = this.configService.get<string>('WHATSAPP_ACCESS_TOKEN') ?? '';
+    this.accessToken =
+      this.configService.get<string>('WHATSAPP_ACCESS_TOKEN') ?? '';
+
+    // Enable dry-run mode if WHATSAPP_DRY_RUN=true or if token looks like a placeholder
+    const token = this.configService.get<string>('WHATSAPP_ACCESS_TOKEN') ?? '';
+    this.dryRun =
+      this.configService.get<string>('WHATSAPP_DRY_RUN') === 'true' ||
+      token === '' ||
+      token.startsWith('EAAAFunny') ||
+      token.includes('YOUR_');
   }
 
   // ═══════════════════════════════════════════
@@ -71,6 +81,12 @@ export class WhatsAppService {
   // Send Messages
   // ═══════════════════════════════════════════
   async sendText(to: string, body: string): Promise<string> {
+    // Dry-run mode: log and return fake ID without calling WhatsApp API
+    if (this.dryRun) {
+      this.logger.log(`[DRY-RUN] Would send text to ${to}: ${body.substring(0, 50)}...`);
+      return `dryrun_${Date.now()}`;
+    }
+
     const payload = {
       messaging_product: 'whatsapp',
       recipient_type: 'individual',
@@ -98,6 +114,15 @@ export class WhatsAppService {
     imageUrl: string,
     caption: string,
   ): Promise<string> {
+    // Dry-run mode: log and return fake ID without calling WhatsApp API
+    if (this.dryRun) {
+      this.logger.log(
+        `[DRY-RUN] Would send image to ${to}: ${imageUrl.substring(0, 50)}...`,
+      );
+      this.logger.log(`[DRY-RUN] Caption: ${caption.substring(0, 50)}...`);
+      return `dryrun_${Date.now()}`;
+    }
+
     const payload = {
       messaging_product: 'whatsapp',
       recipient_type: 'individual',

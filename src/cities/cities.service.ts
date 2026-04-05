@@ -4,12 +4,15 @@ import { Repository } from 'typeorm';
 import { CreateCityDto } from './dto/create-city.dto';
 import { UpdateCityDto } from './dto/update-city.dto';
 import { City } from './entities/city.entity';
+import { CityVariation } from './entities/city-variation.entity';
 
 @Injectable()
 export class CitiesService {
   constructor(
     @InjectRepository(City)
     private citiesRepository: Repository<City>,
+    @InjectRepository(CityVariation)
+    private cityVariationRepository: Repository<CityVariation>,
   ) {}
 
   async create(createCityDto: CreateCityDto): Promise<City> {
@@ -52,18 +55,43 @@ export class CitiesService {
     }
   }
 
+  /**
+   * Find city by keywords using the city_variation table
+   * This is the proper normalized approach instead of comma-separated values
+   */
   async findByKeywords(words: string[]): Promise<City | null> {
     if (!words.length) return null;
-    const cities = await this.citiesRepository.find();
-    for (const city of cities) {
-      if (!city.variations) continue;
-      const variations = city.variations
-        .split(',')
-        .map((v) => v.trim().toLowerCase());
-      if (words.some((word) => variations.includes(word))) {
-        return city;
-      }
-    }
-    return null;
+
+    // Normalize words to lowercase
+    const normalizedWords = words.map((w) => w.toLowerCase().trim());
+
+    // Find a variation that matches any of the keywords
+    const variation = await this.cityVariationRepository
+      .createQueryBuilder('cv')
+      .innerJoinAndSelect('cv.city', 'city')
+      .where('LOWER(cv.variation) IN (:...words)', {
+        words: normalizedWords,
+      })
+      .getOne();
+
+    return variation?.city ?? null;
+  }
+
+  /**
+   * Add a variation to a city (for managing city variations)
+   */
+  async addVariation(cityId: number, variation: string): Promise<CityVariation> {
+    const cityVariation = this.cityVariationRepository.create({
+      cityId,
+      variation: variation.toLowerCase().trim(),
+    });
+    return this.cityVariationRepository.save(cityVariation);
+  }
+
+  /**
+   * Remove a variation from a city
+   */
+  async removeVariation(variationId: number): Promise<void> {
+    await this.cityVariationRepository.delete(variationId);
   }
 }

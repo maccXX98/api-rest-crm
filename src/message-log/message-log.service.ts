@@ -44,7 +44,8 @@ export class MessageLogService {
       const existing = await this.messageLogRepository.findOne({
         where: { waMessageId },
       });
-      if (!existing) throw new Error(`Message log not found for ${waMessageId}`);
+      if (!existing)
+        throw new Error(`Message log not found for ${waMessageId}`);
       return existing;
     }
 

@@ -99,10 +99,23 @@ export class ProductLinksService {
     return this.productLinkRepository.softDelete(id);
   }
 
-  async findByUrl(url: string): Promise<ProductLink | null> {
-    return this.productLinkRepository
-      .createQueryBuilder('pl')
-      .where('pl.link = :url', { url })
-      .getOne();
+  async findByUrl(
+    url: string,
+  ): Promise<{ productLink: ProductLink; product: Product } | null> {
+    // Find the product link first (without relations to avoid lazy loading issues)
+    const productLink = await this.productLinkRepository.findOne({
+      where: { link: url },
+    });
+
+    if (!productLink) return null;
+
+    // Then fetch the product directly by ID to avoid lazy relation issues
+    const product = await this.productRepository.findOne({
+      where: { ProductID: (productLink as any).ProductID },
+    });
+
+    if (!product) return null;
+
+    return { productLink, product };
   }
 }

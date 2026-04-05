@@ -40,4 +40,17 @@ export class WhatsAppController {
     await this.whatsappService.enqueueInboundMessage(body);
     return { status: 'enqueued' };
   }
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // SIMULATION ENDPOINT — FOR LOCAL TESTING ONLY
+  // Skips HMAC signature verification
+  // ═══════════════════════════════════════════════════════════════════════
+  @Post('simulate/inbound')
+  @HttpCode(HttpStatus.OK)
+  async simulateInbound(
+    @Body() body: WebhookPayload,
+  ): Promise<{ status: string; jobId?: string }> {
+    await this.whatsappService.enqueueInboundMessage(body);
+    return { status: 'simulated_enqueued' };
+  }
 }

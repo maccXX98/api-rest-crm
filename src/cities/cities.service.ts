@@ -80,7 +80,10 @@ export class CitiesService {
   /**
    * Add a variation to a city (for managing city variations)
    */
-  async addVariation(cityId: number, variation: string): Promise<CityVariation> {
+  async addVariation(
+    cityId: number,
+    variation: string,
+  ): Promise<CityVariation> {
     const cityVariation = this.cityVariationRepository.create({
       cityId,
       variation: variation.toLowerCase().trim(),

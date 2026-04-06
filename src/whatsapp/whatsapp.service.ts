@@ -83,7 +83,9 @@ export class WhatsAppService {
   async sendText(to: string, body: string): Promise<string> {
     // Dry-run mode: log and return fake ID without calling WhatsApp API
     if (this.dryRun) {
-      this.logger.log(`[DRY-RUN] Would send text to ${to}: ${body.substring(0, 50)}...`);
+      this.logger.log(
+        `[DRY-RUN] Would send text to ${to}: ${body.substring(0, 50)}...`,
+      );
       return `dryrun_${Date.now()}`;
     }
 

@@ -63,12 +63,12 @@ async function bootstrap() {
   app.useGlobalFilters(new AllExceptionsFilter());
   app.useGlobalFilters(new ThrottlerExceptionFilter());
   app.enableCors({
-    origin: ['http://localhost:3001'],
+    origin: [process.env.FRONTEND_URL || 'http://localhost:3001'],
     credentials: true,
   });
   app.setGlobalPrefix('api');
   app.enableShutdownHooks();
-  await app.listen(3000, '0.0.0.0');
+  await app.listen(process.env.PORT || 3000);
 }
 
 bootstrap();

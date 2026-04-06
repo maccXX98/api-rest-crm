@@ -92,10 +92,14 @@ export class ChatbotService {
 
     const { product: fullProduct } = result;
 
-    this.logger.log(`[handleIdle] Found product: ${fullProduct?.Name}, Image: ${fullProduct?.Image?.substring(0, 30)}...`);
+    this.logger.log(
+      `[handleIdle] Found product: ${fullProduct?.Name}, Image: ${fullProduct?.Image?.substring(0, 30)}...`,
+    );
 
     if (!fullProduct?.Image) {
-      this.logger.error(`[handleIdle] Product ${fullProduct?.ProductID} has no Image!`);
+      this.logger.error(
+        `[handleIdle] Product ${fullProduct?.ProductID} has no Image!`,
+      );
       return;
     }
 
@@ -139,10 +143,14 @@ export class ChatbotService {
     this.logger.log(`[handleCityResponse] Received city response: "${text}"`);
 
     const words = normalizeAndSplit(text);
-    this.logger.log(`[handleCityResponse] Normalized words: ${JSON.stringify(words)}`);
+    this.logger.log(
+      `[handleCityResponse] Normalized words: ${JSON.stringify(words)}`,
+    );
 
     const city = await this.citiesService.findByKeywords(words);
-    this.logger.log(`[handleCityResponse] Found city: ${city?.city ?? 'NOT FOUND'}`);
+    this.logger.log(
+      `[handleCityResponse] Found city: ${city?.city ?? 'NOT FOUND'}`,
+    );
 
     if (!city) {
       await this.whatsappService.sendText(
@@ -152,7 +160,9 @@ export class ChatbotService {
       return;
     }
 
-    this.logger.log(`[handleCityResponse] City cashOnDelivery: ${city.cashOnDelivery}`);
+    this.logger.log(
+      `[handleCityResponse] City cashOnDelivery: ${city.cashOnDelivery}`,
+    );
 
     await this.whatsappService.sendImage(phone, city.image, city.template);
 

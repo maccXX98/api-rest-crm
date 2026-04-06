@@ -46,7 +46,7 @@ async function bootstrap() {
   } as any);
 
   // Stub registerJsonContentParser so NestJS doesn't try to add 'application/json' again
-  (fastifyAdapter as any).registerJsonContentParser = () => {};
+  (fastifyAdapter as any).registerJsonContentParser = () => { };
 
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
@@ -62,6 +62,10 @@ async function bootstrap() {
   );
   app.useGlobalFilters(new AllExceptionsFilter());
   app.useGlobalFilters(new ThrottlerExceptionFilter());
+  app.enableCors({
+    origin: ['http://localhost:3001'],
+    credentials: true,
+  });
   app.setGlobalPrefix('api');
   app.enableShutdownHooks();
   await app.listen(3000, '0.0.0.0');

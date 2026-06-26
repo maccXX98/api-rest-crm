@@ -1,0 +1,122 @@
+import { MigrationInterface, QueryRunner } from "typeorm";
+
+export class InitDB1782480206498 implements MigrationInterface {
+    name = 'InitDB1782480206498'
+
+    public async up(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`CREATE TABLE "distributor_relation" ("DistributorRelationid" SERIAL NOT NULL, "TotalOrders" integer NOT NULL, "TotalSpent" numeric(10,2) NOT NULL, "DistributorID" integer NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, CONSTRAINT "PK_5bca2a29d18f0fae7dab8e8cea1" PRIMARY KEY ("DistributorRelationid"))`);
+        await queryRunner.query(`CREATE TABLE "price" ("PriceID" SERIAL NOT NULL, "Cost" numeric(10,2) NOT NULL, "SellingPrice" numeric(10,2) NOT NULL, "Currency" character varying NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "ProductID" integer, CONSTRAINT "PK_5e359c7ef6d506319481c166cd4" PRIMARY KEY ("PriceID"))`);
+        await queryRunner.query(`CREATE TABLE "product_order_detail" ("ProductOrderDetailID" SERIAL NOT NULL, "ProductID" integer NOT NULL, "ProductOrderID" integer NOT NULL, "Quantity" integer NOT NULL, "TotalAmount" numeric(10,2) NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, CONSTRAINT "PK_fd04a0d0ce1cafa71b2b4e4a22e" PRIMARY KEY ("ProductOrderDetailID"))`);
+        await queryRunner.query(`CREATE TABLE "category" ("CategoryID" SERIAL NOT NULL, "Name" character varying(150) NOT NULL, "deletedAt" TIMESTAMP, CONSTRAINT "PK_308bc1ddf5fa7a5d82254f31655" PRIMARY KEY ("CategoryID"))`);
+        await queryRunner.query(`CREATE TABLE "inventory" ("InventoryID" SERIAL NOT NULL, "quantity" integer NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "ProductID" integer, CONSTRAINT "PK_04c9916df0b4515c4f6bad376e7" PRIMARY KEY ("InventoryID"))`);
+        await queryRunner.query(`CREATE TABLE "product_link" ("ProductLinkID" SERIAL NOT NULL, "link" character varying(250) NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "ProductID" integer, CONSTRAINT "PK_43e0fcbce4307c46d5025aa34ae" PRIMARY KEY ("ProductLinkID"))`);
+        await queryRunner.query(`CREATE TABLE "product_variant" ("ProductVariantID" SERIAL NOT NULL, "variantName" character varying(250) NOT NULL, "deletedAt" TIMESTAMP, "ProductID" integer, CONSTRAINT "PK_90aa11f426194fd4b858832f093" PRIMARY KEY ("ProductVariantID"))`);
+        await queryRunner.query(`CREATE TABLE "city" ("CityID" SERIAL NOT NULL, "city" character varying(150) NOT NULL, "variations" text, "cashOnDelivery" boolean NOT NULL DEFAULT false, "template" character varying NOT NULL, "image" character varying NOT NULL, "deletedAt" TIMESTAMP, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_5dded24dfc3c81b388f368a8cf7" PRIMARY KEY ("CityID"))`);
+        await queryRunner.query(`CREATE TABLE "customer" ("CustomerID" SERIAL NOT NULL, "name" character varying(150) NOT NULL, "phone" character varying(150) NOT NULL, "deletedAt" TIMESTAMP, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_d185c134b3bf79cbca2342a0d6f" PRIMARY KEY ("CustomerID"))`);
+        await queryRunner.query(`CREATE TABLE "payment_method" ("PaymentMethodID" SERIAL NOT NULL, "method" character varying(150) NOT NULL, "variations" text, "template" character varying NOT NULL, "image" character varying NOT NULL, "deletedAt" TIMESTAMP, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_877065f42290c6f4fa67a59f4ff" PRIMARY KEY ("PaymentMethodID"))`);
+        await queryRunner.query(`CREATE TABLE "customer_order" ("CustomerOrderID" SERIAL NOT NULL, "CustomerID" integer NOT NULL, "CityID" integer NOT NULL, "PaymentMethodID" integer, "deletedAt" TIMESTAMP, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_aaf7bee409d22b04eca5fa40753" PRIMARY KEY ("CustomerOrderID"))`);
+        await queryRunner.query(`CREATE TABLE "customer_order_detail" ("CustomerOrderDetailID" SERIAL NOT NULL, "Quantity" integer NOT NULL, "DeletedAt" TIMESTAMP, "CreatedAt" TIMESTAMP NOT NULL DEFAULT now(), "CustomerOrderID" integer, "ProductID" integer, CONSTRAINT "PK_a776d18f847260523cfe70934c0" PRIMARY KEY ("CustomerOrderDetailID"))`);
+        await queryRunner.query(`CREATE TABLE "product_images" ("ProductImageID" SERIAL NOT NULL, "originalPath" character varying(500) NOT NULL, "whatsappPath" character varying(500) NOT NULL, "webPath" character varying(500) NOT NULL, "thumbPath" character varying(500) NOT NULL, "productId" integer, "productLinkId" integer, "jobId" integer, "originalSize" integer, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_0390ed82dbc871317729015f36d" PRIMARY KEY ("ProductImageID"))`);
+        await queryRunner.query(`CREATE TABLE "product" ("ProductID" SERIAL NOT NULL, "Name" character varying(150) NOT NULL, "NickName" character varying(150) NOT NULL, "Description" text NOT NULL, "Template" text NOT NULL, "Image" character varying(150) NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, "DistributorID" integer, CONSTRAINT "PK_8bcdb90dbf47e220caf504e154a" PRIMARY KEY ("ProductID"))`);
+        await queryRunner.query(`CREATE TABLE "distributor" ("DistributorID" SERIAL NOT NULL, "Name" character varying(150) NOT NULL, "Country" character varying(150) NOT NULL, "Address" character varying(500) NOT NULL, "ContactPhone" character varying(25) NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, CONSTRAINT "PK_97ddd6533e7244ad2eb20271386" PRIMARY KEY ("DistributorID"))`);
+        await queryRunner.query(`CREATE TABLE "product_order" ("ProductOrderID" SERIAL NOT NULL, "UserID" uuid NOT NULL, "DistributorID" integer NOT NULL, "OrderDate" date NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, CONSTRAINT "PK_04dc41e18829e0f29a526783c9e" PRIMARY KEY ("ProductOrderID"))`);
+        await queryRunner.query(`CREATE INDEX "IDX_08af0d04ec2b0945ab7f6d71cb" ON "product_order" ("UserID") `);
+        await queryRunner.query(`CREATE INDEX "IDX_ece50090cf7a0d8354fed3924b" ON "product_order" ("DistributorID") `);
+        await queryRunner.query(`CREATE TYPE "public"."user_role_enum" AS ENUM('administrator', 'marketing', 'sales')`);
+        await queryRunner.query(`CREATE TABLE "user" ("UserID" uuid NOT NULL DEFAULT uuid_generate_v4(), "FirstName" character varying(150) NOT NULL, "LastName" character varying(150) NOT NULL, "Phone" character varying(25) NOT NULL, "Photo" bytea, "Role" "public"."user_role_enum" NOT NULL DEFAULT 'sales', "Username" character varying(150) NOT NULL, "Email" character varying(100) NOT NULL, "Password" character varying(150) NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP, CONSTRAINT "PK_74e62feed6a9e5863311f4e39a9" PRIMARY KEY ("UserID"))`);
+        await queryRunner.query(`CREATE INDEX "IDX_b000857089edf6cae23b9bc9b8" ON "user" ("Username") `);
+        await queryRunner.query(`CREATE INDEX "IDX_b7eee57d84fb7ed872e660197f" ON "user" ("Email") `);
+        await queryRunner.query(`CREATE TYPE "public"."message_logs_direction_enum" AS ENUM('INBOUND', 'OUTBOUND')`);
+        await queryRunner.query(`CREATE TABLE "message_logs" ("id" SERIAL NOT NULL, "direction" "public"."message_logs_direction_enum" NOT NULL, "phone" character varying(20) NOT NULL, "messageType" character varying(50) NOT NULL, "content" text, "waMessageId" character varying, "waMessageTimestamp" character varying, "rawPayload" jsonb, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_f0aae0d876a96fa1da0a1b97444" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE INDEX "IDX_15e5bb6a2e04b7f7bfa8aa3a32" ON "message_logs" ("phone") `);
+        await queryRunner.query(`CREATE INDEX "IDX_06fc964756eaf98576815abb6a" ON "message_logs" ("waMessageId") `);
+        await queryRunner.query(`CREATE INDEX "IDX_fe9756d92d6c304eaf76f3890a" ON "message_logs" ("phone", "createdAt") `);
+        await queryRunner.query(`CREATE TABLE "city_variation" ("id" SERIAL NOT NULL, "variation" character varying(50) NOT NULL, "city_id" integer NOT NULL, "deletedAt" TIMESTAMP, CONSTRAINT "PK_038f0d1115bbbd2b41856d05e1e" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE INDEX "IDX_e446a097c74c3df93666119115" ON "city_variation" ("variation") `);
+        await queryRunner.query(`CREATE TYPE "public"."conversations_currentstep_enum" AS ENUM('IDLE', 'AWAITING_CITY', 'AWAITING_PAYMENT', 'COMPLETED', 'EXPIRED')`);
+        await queryRunner.query(`CREATE TABLE "conversations" ("id" SERIAL NOT NULL, "phone" character varying(20) NOT NULL, "currentStep" "public"."conversations_currentstep_enum" NOT NULL DEFAULT 'IDLE', "lastProductId" integer, "lastWaMessageId" character varying, "lastWaMessageTimestamp" character varying, "metadata" jsonb, "expiresAt" TIMESTAMP NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_ee34f4f7ced4ec8681f26bf04ef" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE INDEX "IDX_4fe4d998cfc43d6044b24eb0ea" ON "conversations" ("phone") `);
+        await queryRunner.query(`CREATE INDEX "IDX_9e5d361f1b0cf0cc24d29927e4" ON "conversations" ("phone", "currentStep") `);
+        await queryRunner.query(`CREATE TABLE "products_categories" ("CategoryID" integer NOT NULL, "ProductID" integer NOT NULL, CONSTRAINT "PK_48b42ab321c3874f589fc280738" PRIMARY KEY ("CategoryID", "ProductID"))`);
+        await queryRunner.query(`CREATE INDEX "IDX_c9d8a553448d27d620c33fbc1e" ON "products_categories" ("CategoryID") `);
+        await queryRunner.query(`CREATE INDEX "IDX_7359396303f744eb035db3a868" ON "products_categories" ("ProductID") `);
+        await queryRunner.query(`ALTER TABLE "distributor_relation" ADD CONSTRAINT "FK_e2705144f685b3059beed79b2a3" FOREIGN KEY ("DistributorID") REFERENCES "distributor"("DistributorID") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "price" ADD CONSTRAINT "FK_5cec395c4111b44209867d8a0ba" FOREIGN KEY ("ProductID") REFERENCES "product"("ProductID") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "product_order_detail" ADD CONSTRAINT "FK_b0726554b22b07cb6cc9bb4df21" FOREIGN KEY ("ProductID") REFERENCES "product"("ProductID") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "product_order_detail" ADD CONSTRAINT "FK_b0984ae6d073c1e11d19a2d3407" FOREIGN KEY ("ProductOrderID") REFERENCES "product_order"("ProductOrderID") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "inventory" ADD CONSTRAINT "FK_e541473a8e79deb77ac2e7b5e8c" FOREIGN KEY ("ProductID") REFERENCES "product"("ProductID") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "product_link" ADD CONSTRAINT "FK_d69c7bde9d8f41d65d8bc743adf" FOREIGN KEY ("ProductID") REFERENCES "product"("ProductID") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "product_variant" ADD CONSTRAINT "FK_fa9ea609dde616891d3edb703ba" FOREIGN KEY ("ProductID") REFERENCES "product"("ProductID") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "customer_order" ADD CONSTRAINT "FK_06f571912d1005b8224aaa2f98c" FOREIGN KEY ("CityID") REFERENCES "city"("CityID") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "customer_order" ADD CONSTRAINT "FK_04a6d7b2494f0c0ee65723f4c4e" FOREIGN KEY ("PaymentMethodID") REFERENCES "payment_method"("PaymentMethodID") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "customer_order" ADD CONSTRAINT "FK_52ddbb0e54c5230107525f07731" FOREIGN KEY ("CustomerID") REFERENCES "customer"("CustomerID") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "customer_order_detail" ADD CONSTRAINT "FK_35d580dbb351f54f28927ddce0c" FOREIGN KEY ("CustomerOrderID") REFERENCES "customer_order"("CustomerOrderID") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "customer_order_detail" ADD CONSTRAINT "FK_0d05e60ff76547c016c24861057" FOREIGN KEY ("ProductID") REFERENCES "product"("ProductID") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "product_images" ADD CONSTRAINT "FK_b367708bf720c8dd62fc6833161" FOREIGN KEY ("productId") REFERENCES "product"("ProductID") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "product" ADD CONSTRAINT "FK_78c13616bc951be6265d44f6994" FOREIGN KEY ("DistributorID") REFERENCES "distributor"("DistributorID") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "product_order" ADD CONSTRAINT "FK_08af0d04ec2b0945ab7f6d71cbe" FOREIGN KEY ("UserID") REFERENCES "user"("UserID") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "product_order" ADD CONSTRAINT "FK_ece50090cf7a0d8354fed3924b1" FOREIGN KEY ("DistributorID") REFERENCES "distributor"("DistributorID") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "city_variation" ADD CONSTRAINT "FK_6f8b4a58bc2dc13164bead90713" FOREIGN KEY ("city_id") REFERENCES "city"("CityID") ON DELETE CASCADE ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "products_categories" ADD CONSTRAINT "FK_c9d8a553448d27d620c33fbc1ec" FOREIGN KEY ("CategoryID") REFERENCES "category"("CategoryID") ON DELETE CASCADE ON UPDATE CASCADE`);
+        await queryRunner.query(`ALTER TABLE "products_categories" ADD CONSTRAINT "FK_7359396303f744eb035db3a8685" FOREIGN KEY ("ProductID") REFERENCES "product"("ProductID") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+    }
+
+    public async down(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`ALTER TABLE "products_categories" DROP CONSTRAINT "FK_7359396303f744eb035db3a8685"`);
+        await queryRunner.query(`ALTER TABLE "products_categories" DROP CONSTRAINT "FK_c9d8a553448d27d620c33fbc1ec"`);
+        await queryRunner.query(`ALTER TABLE "city_variation" DROP CONSTRAINT "FK_6f8b4a58bc2dc13164bead90713"`);
+        await queryRunner.query(`ALTER TABLE "product_order" DROP CONSTRAINT "FK_ece50090cf7a0d8354fed3924b1"`);
+        await queryRunner.query(`ALTER TABLE "product_order" DROP CONSTRAINT "FK_08af0d04ec2b0945ab7f6d71cbe"`);
+        await queryRunner.query(`ALTER TABLE "product" DROP CONSTRAINT "FK_78c13616bc951be6265d44f6994"`);
+        await queryRunner.query(`ALTER TABLE "product_images" DROP CONSTRAINT "FK_b367708bf720c8dd62fc6833161"`);
+        await queryRunner.query(`ALTER TABLE "customer_order_detail" DROP CONSTRAINT "FK_0d05e60ff76547c016c24861057"`);
+        await queryRunner.query(`ALTER TABLE "customer_order_detail" DROP CONSTRAINT "FK_35d580dbb351f54f28927ddce0c"`);
+        await queryRunner.query(`ALTER TABLE "customer_order" DROP CONSTRAINT "FK_52ddbb0e54c5230107525f07731"`);
+        await queryRunner.query(`ALTER TABLE "customer_order" DROP CONSTRAINT "FK_04a6d7b2494f0c0ee65723f4c4e"`);
+        await queryRunner.query(`ALTER TABLE "customer_order" DROP CONSTRAINT "FK_06f571912d1005b8224aaa2f98c"`);
+        await queryRunner.query(`ALTER TABLE "product_variant" DROP CONSTRAINT "FK_fa9ea609dde616891d3edb703ba"`);
+        await queryRunner.query(`ALTER TABLE "product_link" DROP CONSTRAINT "FK_d69c7bde9d8f41d65d8bc743adf"`);
+        await queryRunner.query(`ALTER TABLE "inventory" DROP CONSTRAINT "FK_e541473a8e79deb77ac2e7b5e8c"`);
+        await queryRunner.query(`ALTER TABLE "product_order_detail" DROP CONSTRAINT "FK_b0984ae6d073c1e11d19a2d3407"`);
+        await queryRunner.query(`ALTER TABLE "product_order_detail" DROP CONSTRAINT "FK_b0726554b22b07cb6cc9bb4df21"`);
+        await queryRunner.query(`ALTER TABLE "price" DROP CONSTRAINT "FK_5cec395c4111b44209867d8a0ba"`);
+        await queryRunner.query(`ALTER TABLE "distributor_relation" DROP CONSTRAINT "FK_e2705144f685b3059beed79b2a3"`);
+        await queryRunner.query(`DROP INDEX "public"."IDX_7359396303f744eb035db3a868"`);
+        await queryRunner.query(`DROP INDEX "public"."IDX_c9d8a553448d27d620c33fbc1e"`);
+        await queryRunner.query(`DROP TABLE "products_categories"`);
+        await queryRunner.query(`DROP INDEX "public"."IDX_9e5d361f1b0cf0cc24d29927e4"`);
+        await queryRunner.query(`DROP INDEX "public"."IDX_4fe4d998cfc43d6044b24eb0ea"`);
+        await queryRunner.query(`DROP TABLE "conversations"`);
+        await queryRunner.query(`DROP TYPE "public"."conversations_currentstep_enum"`);
+        await queryRunner.query(`DROP INDEX "public"."IDX_e446a097c74c3df93666119115"`);
+        await queryRunner.query(`DROP TABLE "city_variation"`);
+        await queryRunner.query(`DROP INDEX "public"."IDX_fe9756d92d6c304eaf76f3890a"`);
+        await queryRunner.query(`DROP INDEX "public"."IDX_06fc964756eaf98576815abb6a"`);
+        await queryRunner.query(`DROP INDEX "public"."IDX_15e5bb6a2e04b7f7bfa8aa3a32"`);
+        await queryRunner.query(`DROP TABLE "message_logs"`);
+        await queryRunner.query(`DROP TYPE "public"."message_logs_direction_enum"`);
+        await queryRunner.query(`DROP INDEX "public"."IDX_b7eee57d84fb7ed872e660197f"`);
+        await queryRunner.query(`DROP INDEX "public"."IDX_b000857089edf6cae23b9bc9b8"`);
+        await queryRunner.query(`DROP TABLE "user"`);
+        await queryRunner.query(`DROP TYPE "public"."user_role_enum"`);
+        await queryRunner.query(`DROP INDEX "public"."IDX_ece50090cf7a0d8354fed3924b"`);
+        await queryRunner.query(`DROP INDEX "public"."IDX_08af0d04ec2b0945ab7f6d71cb"`);
+        await queryRunner.query(`DROP TABLE "product_order"`);
+        await queryRunner.query(`DROP TABLE "distributor"`);
+        await queryRunner.query(`DROP TABLE "product"`);
+        await queryRunner.query(`DROP TABLE "product_images"`);
+        await queryRunner.query(`DROP TABLE "customer_order_detail"`);
+        await queryRunner.query(`DROP TABLE "customer_order"`);
+        await queryRunner.query(`DROP TABLE "payment_method"`);
+        await queryRunner.query(`DROP TABLE "customer"`);
+        await queryRunner.query(`DROP TABLE "city"`);
+        await queryRunner.query(`DROP TABLE "product_variant"`);
+        await queryRunner.query(`DROP TABLE "product_link"`);
+        await queryRunner.query(`DROP TABLE "inventory"`);
+        await queryRunner.query(`DROP TABLE "category"`);
+        await queryRunner.query(`DROP TABLE "product_order_detail"`);
+        await queryRunner.query(`DROP TABLE "price"`);
+        await queryRunner.query(`DROP TABLE "distributor_relation"`);
+    }
+
+}
